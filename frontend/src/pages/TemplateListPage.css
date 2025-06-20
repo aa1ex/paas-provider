@@ -1,0 +1,74 @@
+/* Template List Page Styles */
+.template-list-page {
+  padding: 20px 0;
+}
+
+.template-list-page h2 {
+  margin-top: 0;
+  margin-bottom: 20px;
+  color: #333;
+}
+
+.actions {
+  margin-bottom: 20px;
+  display: flex;
+  justify-content: flex-end;
+}
+
+.create-button {
+  background-color: #28a745;
+}
+
+.create-button:hover {
+  background-color: #218838;
+}
+
+.loading {
+  text-align: center;
+  color: #666;
+  padding: 20px;
+}
+
+.error-message {
+  background-color: #f8d7da;
+  color: #721c24;
+  padding: 15px;
+  border-radius: 4px;
+  margin-bottom: 20px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.error-message p {
+  margin: 0;
+}
+
+.error-message button {
+  background-color: #dc3545;
+  margin-left: 15px;
+}
+
+.error-message button:hover {
+  background-color: #c82333;
+}
+
+.template-preview {
+  font-family: monospace;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  max-width: 300px;
+}
+
+.template-code {
+  background-color: #f8f9fa;
+  padding: 10px;
+  border-radius: 4px;
+  border: 1px solid #eee;
+  white-space: pre-wrap;
+  font-family: monospace;
+  font-size: 14px;
+  max-height: 200px;
+  overflow-y: auto;
+}

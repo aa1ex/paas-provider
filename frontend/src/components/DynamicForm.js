@@ -1,8 +1,21 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 
-const DynamicForm = ({ fields, onSubmit, buttonText = "Применить" }) => {
-  const [formData, setFormData] = useState({});
+const DynamicForm = ({ fields, onSubmit, buttonText = "Применить", initialValues = {} }) => {
+  const [formData, setFormData] = useState(initialValues);
   const [errors, setErrors] = useState({});
+  const prevInitialValuesRef = useRef();
+
+  // Update form data when initialValues change (with deep comparison)
+  useEffect(() => {
+    // Only update if initialValues has actually changed
+    const prevInitialValues = prevInitialValuesRef.current;
+    const initialValuesChanged = JSON.stringify(prevInitialValues) !== JSON.stringify(initialValues);
+
+    if (initialValuesChanged) {
+      setFormData(initialValues);
+      prevInitialValuesRef.current = initialValues;
+    }
+  }, [initialValues]);
 
   const handleChange = (e) => {
     const { name, value } = e.target;
@@ -54,6 +67,17 @@ const DynamicForm = ({ fields, onSubmit, buttonText = "Применить" }) =>
                 </option>
               ))}
             </select>
+          ) : field.type === 'textarea' ? (
+            <textarea
+              id={field.name}
+              name={field.name}
+              value={formData[field.name] || ''}
+              onChange={handleChange}
+              placeholder={field.placeholder}
+              required={field.required}
+              rows={field.rows || 5}
+              className="form-textarea"
+            />
           ) : (
             <input
               type={field.type || 'text'}

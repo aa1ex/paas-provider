@@ -1,0 +1,54 @@
+/* Kubernetes Cluster List Page Styles */
+.k8s-list-page {
+  padding: 20px 0;
+}
+
+.k8s-list-page h2 {
+  margin-top: 0;
+  margin-bottom: 20px;
+  color: #333;
+}
+
+.actions {
+  margin-bottom: 20px;
+  display: flex;
+  justify-content: flex-end;
+}
+
+.create-button {
+  background-color: #28a745;
+}
+
+.create-button:hover {
+  background-color: #218838;
+}
+
+.loading {
+  text-align: center;
+  color: #666;
+  padding: 20px;
+}
+
+.error-message {
+  background-color: #f8d7da;
+  color: #721c24;
+  padding: 15px;
+  border-radius: 4px;
+  margin-bottom: 20px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.error-message p {
+  margin: 0;
+}
+
+.error-message button {
+  background-color: #dc3545;
+  margin-left: 15px;
+}
+
+.error-message button:hover {
+  background-color: #c82333;
+}
