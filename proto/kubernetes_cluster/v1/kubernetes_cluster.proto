@@ -1,0 +1,65 @@
+syntax = "proto3";
+
+package kubernetes_cluster.v1;
+
+option go_package = "kubernetesclusterv1";
+
+
+// KubernetesCluster represents a Kubernetes cluster configuration
+message KubernetesCluster {
+  string id = 1;
+  string name = 2;
+  string region = 3;
+  int32 node_count = 4;
+  string version = 5;
+  string template_id = 6;
+  string rendered_template = 7;
+}
+
+
+// Request and response messages for KubernetesCluster service
+message CreateKubernetesClusterRequest {
+  KubernetesCluster kubernetes_cluster = 1;
+}
+
+message CreateKubernetesClusterResponse {
+  KubernetesCluster kubernetes_cluster = 1;
+}
+
+message GetKubernetesClusterRequest {
+  string id = 1;
+}
+
+message GetKubernetesClusterResponse {
+  KubernetesCluster kubernetes_cluster = 1;
+}
+
+message ListKubernetesClustersRequest {}
+
+message ListKubernetesClustersResponse {
+  repeated KubernetesCluster kubernetes_clusters = 1;
+}
+
+message UpdateKubernetesClusterRequest {
+  KubernetesCluster kubernetes_cluster = 1;
+}
+
+message UpdateKubernetesClusterResponse {
+  KubernetesCluster kubernetes_cluster = 1;
+}
+
+message DeleteKubernetesClusterRequest {
+  string id = 1;
+}
+
+message DeleteKubernetesClusterResponse {
+  bool success = 1;
+}
+
+service KubernetesClusterService {
+  rpc CreateKubernetesCluster(CreateKubernetesClusterRequest) returns (CreateKubernetesClusterResponse);
+  rpc GetKubernetesCluster(GetKubernetesClusterRequest) returns (GetKubernetesClusterResponse);
+  rpc ListKubernetesClusters(ListKubernetesClustersRequest) returns (ListKubernetesClustersResponse);
+  rpc UpdateKubernetesCluster(UpdateKubernetesClusterRequest) returns (UpdateKubernetesClusterResponse);
+  rpc DeleteKubernetesCluster(DeleteKubernetesClusterRequest) returns (DeleteKubernetesClusterResponse);
+}

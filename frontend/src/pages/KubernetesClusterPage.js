@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
-import axios from 'axios';
 import DynamicForm from '../components/DynamicForm';
+import client from "../client/client";
 
 const KubernetesClusterPage = () => {
   const [result, setResult] = useState(null);
@@ -67,8 +67,10 @@ const KubernetesClusterPage = () => {
       };
 
       // Send the data to the server
-      const response = await axios.post('/api/k8s', data);
-      setResult(response.data);
+      const response = await client.kubernetesClusters.createKubernetesCluster({
+        kubernetesCluster: data
+      });
+      setResult(response?.kubernetesCluster?.renderedTemplate);
     } catch (err) {
       setError(err.response?.data || err.message || 'Произошла ошибка при создании кластера Kubernetes');
     } finally {

@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
-import axios from 'axios';
 import DynamicForm from '../components/DynamicForm';
+import client from "../client/client";
 
 const VirtualMachinePage = () => {
   const [result, setResult] = useState(null);
@@ -67,8 +67,10 @@ const VirtualMachinePage = () => {
       };
 
       // Send the data to the server
-      const response = await axios.post('/api/vm', data);
-      setResult(response.data);
+      const response = await client.virtualMachines.createVirtualMachine({
+        virtualMachine: data
+      });
+      setResult(response?.virtualMachine?.renderedTemplate);
     } catch (err) {
       setError(err.response?.data || err.message || 'Произошла ошибка при создании виртуальной машины');
     } finally {

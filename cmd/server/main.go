@@ -1,21 +1,26 @@
 package main
 
 import (
-	"fmt"
+	"github.com/paas-provider/internal/server/k8s"
+	"github.com/paas-provider/internal/server/template"
+	"github.com/paas-provider/internal/server/vm"
+	"github.com/paas-provider/internal/tmplproc"
+	"github.com/paas-provider/pkg/api/grpc/kubernetes_cluster/v1/kubernetes_clusterv1connect"
+	"github.com/paas-provider/pkg/api/grpc/template/v1/templatev1connect"
+	"github.com/paas-provider/pkg/api/grpc/virtual_machine/v1/virtual_machinev1connect"
+	"github.com/rs/cors"
+	"golang.org/x/net/http2"
+	"golang.org/x/net/http2/h2c"
 	"log"
 	"net"
 	"net/http"
+	"strconv"
 
-	"github.com/paas-provider/internal/server"
 	"github.com/paas-provider/internal/storage"
 )
 
 func main() {
-	// Create a new storage
 	store := storage.NewStorage()
-
-	// Create a new server
-	srv := server.NewServer(store)
 
 	// Add some example templates
 	vmTemplate := storage.Template{
@@ -44,75 +49,28 @@ Kubernetes Version: {{ .Version }}
 	}
 	store.CreateTemplate(k8sTemplate)
 
-	// Start a simple HTTP server for testing
-	http.HandleFunc("/", func(w http.ResponseWriter, r *http.Request) {
-		fmt.Fprintf(w, "PaaS Provider API is running")
-	})
+	runServer(store)
+}
 
-	// Create a VM endpoint
-	http.HandleFunc("/api/vm", func(w http.ResponseWriter, r *http.Request) {
-		if r.Method != http.MethodPost {
-			http.Error(w, "Method not allowed", http.StatusMethodNotAllowed)
-			return
-		}
+func runServer(s *storage.Storage) {
+	mux := http.NewServeMux()
+	tmplProc := tmplproc.NewTemplateProcessor(s)
 
-		// Create a new VM
-		vm := storage.VirtualMachine{
-			Name:       "test-vm",
-			CPU:        2,
-			Memory:     2048,
-			OS:         "Ubuntu 20.04",
-			TemplateID: "vm-template-1",
-		}
+	path, handler := templatev1connect.NewTemplateServiceHandler(template.NewService(s, tmplProc))
+	mux.Handle(path, handler)
+	path, handler = virtual_machinev1connect.NewVirtualMachineServiceHandler(vm.NewService(s, tmplProc))
+	mux.Handle(path, handler)
+	path, handler = kubernetes_clusterv1connect.NewKubernetesClusterServiceHandler(k8s.NewService(s, tmplProc))
+	mux.Handle(path, handler)
 
-		// Process the VM
-		result, err := srv.CreateVirtualMachine(r.Context(), vm)
-		if err != nil {
-			http.Error(w, err.Error(), http.StatusInternalServerError)
-			return
-		}
-
-		// Return the result
-		fmt.Fprintf(w, "VM created: %s\n", result.Name)
-		fmt.Fprintf(w, "Rendered template:\n%s", result.RenderedTemplate)
-	})
-
-	// Create a Kubernetes cluster endpoint
-	http.HandleFunc("/api/k8s", func(w http.ResponseWriter, r *http.Request) {
-		if r.Method != http.MethodPost {
-			http.Error(w, "Method not allowed", http.StatusMethodNotAllowed)
-			return
-		}
-
-		// Create a new Kubernetes cluster
-		cluster := storage.KubernetesCluster{
-			Name:       "test-cluster",
-			Region:     "us-west-1",
-			NodeCount:  3,
-			Version:    "1.24",
-			TemplateID: "k8s-template-1",
-		}
-
-		// Process the Kubernetes cluster
-		result, err := srv.CreateKubernetesCluster(r.Context(), cluster)
-		if err != nil {
-			http.Error(w, err.Error(), http.StatusInternalServerError)
-			return
-		}
-
-		// Return the result
-		fmt.Fprintf(w, "Kubernetes cluster created: %s\n", result.Name)
-		fmt.Fprintf(w, "Rendered template:\n%s", result.RenderedTemplate)
-	})
-
-	// Start the HTTP server
 	port := 8080
 	log.Printf("Starting HTTP server on port %d", port)
-	listener, err := net.Listen("tcp", fmt.Sprintf(":%d", port))
+	err := http.ListenAndServe(
+		net.JoinHostPort("", strconv.Itoa(port)),
+		// Use h2c so we can serve HTTP/2 without TLS.
+		h2c.NewHandler(cors.AllowAll().Handler(mux), &http2.Server{}),
+	)
 	if err != nil {
-		log.Fatalf("Failed to listen: %v", err)
-	}
-	if err := http.Serve(listener, nil); err != nil {
-		log.Fatalf("Failed to serve: %v", err)
+		log.Fatal(err)
 	}
 }

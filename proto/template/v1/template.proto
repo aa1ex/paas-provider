@@ -1,0 +1,69 @@
+syntax = "proto3";
+
+package template.v1;
+
+option go_package = "templatev1";
+
+// Services
+service TemplateService {
+  rpc CreateTemplate(CreateTemplateRequest) returns (CreateTemplateResponse);
+  rpc GetTemplate(GetTemplateRequest) returns (GetTemplateResponse);
+  rpc ListTemplates(ListTemplatesRequest) returns (ListTemplatesResponse);
+  rpc UpdateTemplate(UpdateTemplateRequest) returns (UpdateTemplateResponse);
+  rpc DeleteTemplate(DeleteTemplateRequest) returns (DeleteTemplateResponse);
+}
+
+// Template represents a configuration template
+message Template {
+  string id = 1;
+  string name = 2;
+  enum Type {
+    TYPE_UNSPECIFIED = 0;
+    TYPE_VM = 1;
+    TYPE_KUBERNETES = 2;
+  }
+  Type type = 3;
+  string raw_template = 4; // Go template
+}
+
+// Request and response messages for Template service
+message CreateTemplateRequest {
+  Template template = 1;
+}
+
+message CreateTemplateResponse {
+  string id = 1;
+}
+
+message GetTemplateRequest {
+  string id = 1;
+}
+
+message GetTemplateResponse {
+  Template template = 1;
+}
+
+message ListTemplatesRequest {
+  // Filter by template type
+  Template.Type type = 1;
+}
+
+message ListTemplatesResponse {
+  repeated Template templates = 1;
+}
+
+message UpdateTemplateRequest {
+  Template template = 1;
+}
+
+message UpdateTemplateResponse {
+  Template template = 1;
+}
+
+message DeleteTemplateRequest {
+  string id = 1;
+}
+
+message DeleteTemplateResponse {
+  bool success = 1;
+}
