@@ -4,6 +4,8 @@ import ResourceDetail from '../components/ResourceDetail';
 import ResourceForm from '../components/ResourceForm';
 import client from '../client/client';
 import './TemplateListPage.css';
+import {Button} from "@mui/material";
+import {Add as AddIcon} from "@mui/icons-material";
 
 const TemplateListPage = () => {
   const [templates, setTemplates] = useState([]);
@@ -178,15 +180,17 @@ const TemplateListPage = () => {
       <h2>Управление Шаблонами</h2>
 
       <div className="actions">
-        <button 
-          className="create-button" 
-          onClick={() => {
-            setSelectedTemplate(null);
-            setIsEditModalOpen(true);
-          }}
+        <Button
+            variant="contained"
+            color="primary"
+            startIcon={<AddIcon />}
+            onClick={() => {
+              setSelectedTemplate(null);
+              setIsEditModalOpen(true);
+            }}
         >
-          Создать Шаблон
-        </button>
+          Создать шаблон
+        </Button>
       </div>
 
       {loading && <p className="loading">Загрузка шаблонов...</p>}

@@ -4,6 +4,8 @@ import ResourceDetail from '../components/ResourceDetail';
 import ResourceForm from '../components/ResourceForm';
 import client from '../client/client';
 import './KubernetesClusterListPage.css';
+import {Button} from "@mui/material";
+import {Add as AddIcon} from "@mui/icons-material";
 
 const KubernetesClusterListPage = () => {
   const [clusters, setClusters] = useState([]);
@@ -148,7 +150,7 @@ const KubernetesClusterListPage = () => {
     try {
       // Convert numeric fields to numbers
       formData.nodeCount = parseInt(formData.nodeCount, 10);
-      
+
       if (selectedCluster) {
         // Update existing cluster
         await client.kubernetesClusters.updateKubernetesCluster({
@@ -173,7 +175,7 @@ const KubernetesClusterListPage = () => {
           }
         });
       }
-      
+
       // Close the modal and refresh the cluster list
       setIsEditModalOpen(false);
       setSelectedCluster(null);
@@ -187,28 +189,30 @@ const KubernetesClusterListPage = () => {
   return (
     <div className="k8s-list-page">
       <h2>Управление Кластерами Kubernetes</h2>
-      
+
       <div className="actions">
-        <button 
-          className="create-button" 
-          onClick={() => {
-            setSelectedCluster(null);
-            setIsEditModalOpen(true);
-          }}
+        <Button
+            variant="contained"
+            color="primary"
+            startIcon={<AddIcon />}
+            onClick={() => {
+              setSelectedCluster(null);
+              setIsEditModalOpen(true);
+            }}
         >
           Создать Кластер Kubernetes
-        </button>
+        </Button>
       </div>
-      
+
       {loading && <p className="loading">Загрузка кластеров...</p>}
-      
+
       {error && (
         <div className="error-message">
           <p>{error}</p>
           <button onClick={fetchKubernetesClusters}>Повторить</button>
         </div>
       )}
-      
+
       {!loading && !error && (
         <ResourceList 
           resources={clusters}
@@ -219,7 +223,7 @@ const KubernetesClusterListPage = () => {
           emptyMessage="Нет доступных кластеров Kubernetes"
         />
       )}
-      
+
       {isViewModalOpen && selectedCluster && (
         <ResourceDetail 
           resource={selectedCluster}
@@ -231,7 +235,7 @@ const KubernetesClusterListPage = () => {
           title="Просмотр Кластера Kubernetes"
         />
       )}
-      
+
       {isEditModalOpen && (
         <ResourceForm 
           resource={selectedCluster}

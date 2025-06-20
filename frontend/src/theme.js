@@ -1,8 +1,9 @@
 import { createTheme } from '@mui/material/styles';
 
 // Create a theme instance with a clean, modern design inspired by Apple/Google
-const theme = createTheme({
+const getTheme = (mode = 'light') => createTheme({
   palette: {
+    mode,
     primary: {
       main: '#1976d2', // Google blue
       light: '#4791db',
@@ -35,15 +36,26 @@ const theme = createTheme({
       light: '#81c784',
       dark: '#388e3c',
     },
-    background: {
-      default: '#f5f7fa', // Light gray background (Apple-inspired)
-      paper: '#ffffff',
-    },
-    text: {
-      primary: '#212121', // Almost black
-      secondary: '#757575', // Medium gray
-      disabled: '#9e9e9e', // Light gray
-    },
+    background: mode === 'light' 
+      ? {
+          default: '#f5f7fa', // Light gray background (Apple-inspired)
+          paper: '#ffffff',
+        }
+      : {
+          default: '#121212', // Dark background
+          paper: '#1e1e1e',
+        },
+    text: mode === 'light'
+      ? {
+          primary: '#212121', // Almost black
+          secondary: '#757575', // Medium gray
+          disabled: '#9e9e9e', // Light gray
+        }
+      : {
+          primary: '#ffffff', // White
+          secondary: '#b0b0b0', // Light gray
+          disabled: '#6c6c6c', // Medium gray
+        },
   },
   typography: {
     fontFamily: [
@@ -162,4 +174,8 @@ const theme = createTheme({
   },
 });
 
+// Export light theme by default
+const theme = getTheme('light');
+
+export { getTheme };
 export default theme;

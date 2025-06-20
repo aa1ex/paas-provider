@@ -160,18 +160,6 @@ const DynamicForm = ({ fields, onSubmit, buttonText = "Применить", init
             );
           }
         })}
-
-        <Box sx={{ mt: 2 }}>
-          <Button 
-            type="submit" 
-            variant="contained" 
-            color="primary" 
-            size="large"
-            sx={{ minWidth: 120 }}
-          >
-            {buttonText}
-          </Button>
-        </Box>
       </Stack>
     </Box>
   );

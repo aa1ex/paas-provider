@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useMemo } from 'react';
 import { BrowserRouter as Router, Routes, Route, Navigate, useLocation, Link as RouterLink } from 'react-router-dom';
 import {
   AppBar,
@@ -17,19 +17,21 @@ import {
   Container,
   useTheme,
   useMediaQuery,
-  Paper
+  Paper,
+  ThemeProvider,
+  Tooltip
 } from '@mui/material';
 import {
   Menu as MenuIcon,
   Computer as ComputerIcon,
   Storage as StorageIcon,
   Description as DescriptionIcon,
-  Add as AddIcon,
   List as ListIcon,
-  Dashboard as DashboardIcon
+  Dashboard as DashboardIcon,
+  Brightness4 as DarkModeIcon,
+  Brightness7 as LightModeIcon
 } from '@mui/icons-material';
-import VirtualMachinePage from './pages/VirtualMachinePage';
-import KubernetesClusterPage from './pages/KubernetesClusterPage';
+import { getTheme } from './theme';
 import TemplateListPage from './pages/TemplateListPage';
 import VirtualMachineListPage from './pages/VirtualMachineListPage';
 import KubernetesClusterListPage from './pages/KubernetesClusterListPage';
@@ -48,15 +50,13 @@ const navItems = [
   {
     category: 'Виртуальные машины',
     items: [
-      { name: 'Список машин', path: '/vm/list', icon: <ListIcon /> },
-      { name: 'Создать машину', path: '/vm/create', icon: <AddIcon /> }
+      { name: 'Список машин', path: '/vm/list', icon: <ListIcon /> }
     ]
   },
   {
     category: 'Kubernetes',
     items: [
-      { name: 'Список кластеров', path: '/kubernetes/list', icon: <ListIcon /> },
-      { name: 'Создать кластер', path: '/kubernetes/create', icon: <AddIcon /> }
+      { name: 'Список кластеров', path: '/kubernetes/list', icon: <ListIcon /> }
     ]
   },
   {
@@ -273,105 +273,121 @@ function Dashboard() {
 
 function App() {
   const [mobileOpen, setMobileOpen] = useState(false);
-  const theme = useTheme();
+  const [mode, setMode] = useState('light');
+  const theme = useMemo(() => getTheme(mode), [mode]);
   const isDesktop = useMediaQuery(theme.breakpoints.up('md'));
 
   const handleDrawerToggle = () => {
     setMobileOpen(!mobileOpen);
   };
 
+  const toggleTheme = () => {
+    setMode(prevMode => prevMode === 'light' ? 'dark' : 'light');
+  };
+
   return (
-    <Router>
-      <Box sx={{ display: 'flex', minHeight: '100vh' }}>
-        <CssBaseline />
+    <ThemeProvider theme={theme}>
+      <Router>
+        <Box sx={{ display: 'flex', minHeight: '100vh' }}>
+          <CssBaseline />
 
-        {/* App Bar */}
-        <AppBar 
-          position="fixed" 
-          sx={{ 
-            zIndex: (theme) => theme.zIndex.drawer + 1,
-            backgroundColor: 'background.paper',
-            color: 'text.primary',
-            boxShadow: '0 1px 3px rgba(0, 0, 0, 0.1)'
-          }}
-        >
-          <Toolbar>
-            <IconButton
-              color="inherit"
-              aria-label="open drawer"
-              edge="start"
-              onClick={handleDrawerToggle}
-              sx={{ mr: 2, display: { md: 'none' } }}
-            >
-              <MenuIcon />
-            </IconButton>
-            <Typography
-              variant="h6"
-              noWrap
-              component="div"
-              sx={{ flexGrow: 1, display: { xs: 'none', md: 'block' } }}
-            >
-              PaaS Provider
-            </Typography>
-          </Toolbar>
-        </AppBar>
-
-        {/* Navigation Drawer */}
-        <NavigationDrawer 
-          mobileOpen={mobileOpen} 
-          handleDrawerToggle={handleDrawerToggle} 
-        />
-
-        {/* Main Content */}
-        <Box
-          component="main"
-          sx={{
-            flexGrow: 1,
-            p: 3,
-            width: { md: `calc(100% - ${drawerWidth}px)` },
-            backgroundColor: 'background.default',
-            minHeight: '100vh'
-          }}
-        >
-          <Toolbar /> {/* Spacer for fixed AppBar */}
-          <Container maxWidth="lg" sx={{ mt: 2 }}>
-            <Routes>
-              <Route path="/" element={<Dashboard />} />
-
-              {/* Creation routes */}
-              <Route path="/vm/create" element={<VirtualMachinePage />} />
-              <Route path="/kubernetes/create" element={<KubernetesClusterPage />} />
-              <Route path="/templates/create" element={<Navigate to="/templates/list" replace />} />
-
-              {/* Management routes */}
-              <Route path="/vm/list" element={<VirtualMachineListPage />} />
-              <Route path="/kubernetes/list" element={<KubernetesClusterListPage />} />
-              <Route path="/templates/list" element={<TemplateListPage />} />
-
-              {/* Redirect old routes */}
-              <Route path="/vm" element={<Navigate to="/vm/create" replace />} />
-              <Route path="/kubernetes" element={<Navigate to="/kubernetes/create" replace />} />
-            </Routes>
-          </Container>
-
-          {/* Footer */}
-          <Box 
-            component="footer" 
+          {/* App Bar */}
+          <AppBar 
+            position="fixed" 
             sx={{ 
-              mt: 'auto', 
-              py: 3, 
-              textAlign: 'center',
-              borderTop: '1px solid rgba(0, 0, 0, 0.12)',
-              marginTop: 4
+              zIndex: (theme) => theme.zIndex.drawer + 1,
+              backgroundColor: 'background.paper',
+              color: 'text.primary',
+              boxShadow: '0 1px 3px rgba(0, 0, 0, 0.1)'
             }}
           >
-            <Typography variant="body2" color="text.secondary">
-              PaaS Provider &copy; {new Date().getFullYear()}
-            </Typography>
+            <Toolbar>
+              <IconButton
+                color="inherit"
+                aria-label="open drawer"
+                edge="start"
+                onClick={handleDrawerToggle}
+                sx={{ mr: 2, display: { md: 'none' } }}
+              >
+                <MenuIcon />
+              </IconButton>
+              <Typography
+                variant="h6"
+                noWrap
+                component="div"
+                sx={{ flexGrow: 1, display: { xs: 'none', md: 'block' } }}
+              >
+                PaaS Provider
+              </Typography>
+
+              {/* Theme Toggle Button */}
+              <Tooltip title={mode === 'light' ? 'Тёмная тема' : 'Светлая тема'}>
+                <IconButton 
+                  color="inherit" 
+                  onClick={toggleTheme}
+                  sx={{ ml: 1 }}
+                >
+                  {mode === 'light' ? <DarkModeIcon /> : <LightModeIcon />}
+                </IconButton>
+              </Tooltip>
+            </Toolbar>
+          </AppBar>
+
+          {/* Navigation Drawer */}
+          <NavigationDrawer 
+            mobileOpen={mobileOpen} 
+            handleDrawerToggle={handleDrawerToggle} 
+          />
+
+          {/* Main Content */}
+          <Box
+            component="main"
+            sx={{
+              flexGrow: 1,
+              p: 3,
+              width: { md: `calc(100% - ${drawerWidth}px)` },
+              backgroundColor: 'background.default',
+              minHeight: '100vh'
+            }}
+          >
+            <Toolbar /> {/* Spacer for fixed AppBar */}
+            <Container maxWidth="lg" sx={{ mt: 2 }}>
+              <Routes>
+                <Route path="/" element={<Dashboard />} />
+
+                {/* Creation routes */}
+                <Route path="/templates/create" element={<Navigate to="/templates/list" replace />} />
+
+                {/* Management routes */}
+                <Route path="/vm/list" element={<VirtualMachineListPage />} />
+                <Route path="/kubernetes/list" element={<KubernetesClusterListPage />} />
+                <Route path="/templates/list" element={<TemplateListPage />} />
+
+                {/* Redirect old routes */}
+                <Route path="/vm" element={<Navigate to="/vm/list" replace />} />
+                <Route path="/kubernetes" element={<Navigate to="/kubernetes/list" replace />} />
+              </Routes>
+            </Container>
+
+            {/* Footer */}
+            <Box 
+              component="footer" 
+              sx={{ 
+                mt: 'auto', 
+                py: 3, 
+                textAlign: 'center',
+                borderTop: '1px solid rgba(0, 0, 0, 0.12)',
+                marginTop: 4
+              }}
+            >
+              <Typography variant="body2" color="text.secondary">
+                PaaS Provider &copy; {new Date().getFullYear()}
+              </Typography>
+            </Box>
           </Box>
         </Box>
-      </Box>
-    </Router>
+      </Router>
+    </ThemeProvider>
   );
 }
 

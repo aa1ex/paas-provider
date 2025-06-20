@@ -4,6 +4,8 @@ import ResourceDetail from '../components/ResourceDetail';
 import ResourceForm from '../components/ResourceForm';
 import client from '../client/client';
 import './VirtualMachineListPage.css';
+import {Button} from "@mui/material";
+import {Add as AddIcon} from "@mui/icons-material";
 
 const VirtualMachineListPage = () => {
   const [virtualMachines, setVirtualMachines] = useState([]);
@@ -148,7 +150,7 @@ const VirtualMachineListPage = () => {
       // Convert numeric fields to numbers
       formData.cpu = parseInt(formData.cpu, 10);
       formData.memory = parseInt(formData.memory, 10);
-      
+
       if (selectedVM) {
         // Update existing VM
         await client.virtualMachines.updateVirtualMachine({
@@ -173,7 +175,7 @@ const VirtualMachineListPage = () => {
           }
         });
       }
-      
+
       // Close the modal and refresh the VM list
       setIsEditModalOpen(false);
       setSelectedVM(null);
@@ -187,28 +189,30 @@ const VirtualMachineListPage = () => {
   return (
     <div className="vm-list-page">
       <h2>Управление Виртуальными Машинами</h2>
-      
+
       <div className="actions">
-        <button 
-          className="create-button" 
-          onClick={() => {
-            setSelectedVM(null);
-            setIsEditModalOpen(true);
-          }}
+        <Button
+            variant="contained"
+            color="primary"
+            startIcon={<AddIcon />}
+            onClick={() => {
+              setSelectedVM(null);
+              setIsEditModalOpen(true);
+            }}
         >
-          Создать Виртуальную Машину
-        </button>
+          Создать виртуальную машину
+        </Button>
       </div>
-      
+
       {loading && <p className="loading">Загрузка виртуальных машин...</p>}
-      
+
       {error && (
         <div className="error-message">
           <p>{error}</p>
           <button onClick={fetchVirtualMachines}>Повторить</button>
         </div>
       )}
-      
+
       {!loading && !error && (
         <ResourceList 
           resources={virtualMachines}
@@ -219,7 +223,7 @@ const VirtualMachineListPage = () => {
           emptyMessage="Нет доступных виртуальных машин"
         />
       )}
-      
+
       {isViewModalOpen && selectedVM && (
         <ResourceDetail 
           resource={selectedVM}
@@ -231,7 +235,7 @@ const VirtualMachineListPage = () => {
           title="Просмотр Виртуальной Машины"
         />
       )}
-      
+
       {isEditModalOpen && (
         <ResourceForm 
           resource={selectedVM}
