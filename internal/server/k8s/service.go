@@ -3,59 +3,149 @@ package k8s
 import (
 	"connectrpc.com/connect"
 	"context"
-	"fmt"
+	"github.com/paas-provider/internal/server/base"
 	"github.com/paas-provider/internal/server/util"
 	"github.com/paas-provider/internal/storage"
 	"github.com/paas-provider/internal/tmplproc"
+	"github.com/paas-provider/internal/validation"
 	v1 "github.com/paas-provider/pkg/api/grpc/kubernetes_cluster/v1"
 	"github.com/paas-provider/pkg/api/grpc/kubernetes_cluster/v1/kubernetes_clusterv1connect"
 )
 
 type Service struct {
-	storage   *storage.Storage
-	processor *tmplproc.TemplateProcessor
+	*base.Service
 	kubernetes_clusterv1connect.UnimplementedKubernetesClusterServiceHandler
 }
 
 func NewService(storage *storage.Storage, processor *tmplproc.TemplateProcessor) *Service {
 	return &Service{
-		storage:   storage,
-		processor: processor,
+		Service: base.NewService(storage, processor),
 	}
 }
 
+// CreateKubernetesCluster creates a new Kubernetes cluster
 func (s *Service) CreateKubernetesCluster(_ context.Context, req *connect.Request[v1.CreateKubernetesClusterRequest]) (*connect.Response[v1.CreateKubernetesClusterResponse], error) {
-	if req.Msg == nil || req.Msg.KubernetesCluster == nil {
-		return nil, fmt.Errorf("invalid request")
+	// Validate the request
+	errors := validation.ValidateCreateKubernetesClusterRequest(req.Msg)
+	if err := s.HandleValidationErrors(errors); err != nil {
+		return nil, err
 	}
 
-	kc := storage.KubernetesCluster{
-		ID:         util.GenerateID(),
-		Name:       req.Msg.KubernetesCluster.Name,
-		Region:     req.Msg.KubernetesCluster.Region,
-		NodeCount:  req.Msg.KubernetesCluster.NodeCount,
-		Version:    req.Msg.KubernetesCluster.Version,
-		TemplateID: req.Msg.KubernetesCluster.TemplateId,
-	}
+	// Convert proto cluster to storage cluster
+	cluster := base.ConvertProtoK8sToStorage(req.Msg.KubernetesCluster)
+	
+	// Generate ID
+	cluster.ID = util.GenerateID()
 
 	// Process the template
-	renderedTemplate, err := s.processor.ProcessKubernetesClusterTemplate(kc)
+	renderedTemplate, err := s.Processor.ProcessKubernetesClusterTemplate(cluster)
 	if err != nil {
-		return nil, fmt.Errorf("failed to process template: %w", err)
+		return nil, s.HandleTemplateProcessorError(err)
 	}
 
 	// Set the rendered template
-	kc.RenderedTemplate = renderedTemplate
+	cluster.RenderedTemplate = renderedTemplate
 
-	_ = s.storage.CreateKubernetesCluster(kc)
+	// Store the Kubernetes cluster
+	createdCluster := s.Storage.CreateKubernetesCluster(cluster)
 
-	return connect.NewResponse(&v1.CreateKubernetesClusterResponse{KubernetesCluster: &v1.KubernetesCluster{
-		Id:               kc.ID,
-		Name:             kc.Name,
-		Region:           kc.Region,
-		NodeCount:        kc.NodeCount,
-		Version:          kc.Version,
-		TemplateId:       kc.TemplateID,
-		RenderedTemplate: kc.RenderedTemplate,
-	}}), nil
+	// Return the response
+	return connect.NewResponse(&v1.CreateKubernetesClusterResponse{
+		KubernetesCluster: base.ConvertStorageK8sToProto(createdCluster),
+	}), nil
+}
+
+// GetKubernetesCluster retrieves a Kubernetes cluster by ID
+func (s *Service) GetKubernetesCluster(_ context.Context, req *connect.Request[v1.GetKubernetesClusterRequest]) (*connect.Response[v1.GetKubernetesClusterResponse], error) {
+	// Validate the request
+	errors := validation.ValidateGetKubernetesClusterRequest(req.Msg)
+	if err := s.HandleValidationErrors(errors); err != nil {
+		return nil, err
+	}
+
+	// Get the Kubernetes cluster from storage
+	cluster, err := s.Storage.GetKubernetesCluster(req.Msg.Id)
+	if err != nil {
+		return nil, s.HandleStorageError(err)
+	}
+
+	// Convert storage cluster to proto cluster
+	protoCluster := base.ConvertStorageK8sToProto(cluster)
+
+	// Return the response
+	return connect.NewResponse(&v1.GetKubernetesClusterResponse{
+		KubernetesCluster: protoCluster,
+	}), nil
+}
+
+// ListKubernetesClusters retrieves all Kubernetes clusters
+func (s *Service) ListKubernetesClusters(_ context.Context, _ *connect.Request[v1.ListKubernetesClustersRequest]) (*connect.Response[v1.ListKubernetesClustersResponse], error) {
+	// Get all Kubernetes clusters from storage
+	clusters := s.Storage.ListKubernetesClusters()
+
+	// Convert storage clusters to proto clusters
+	protoClusters := make([]*v1.KubernetesCluster, len(clusters))
+	for i, cluster := range clusters {
+		protoClusters[i] = base.ConvertStorageK8sToProto(cluster)
+	}
+
+	// Return the response
+	return connect.NewResponse(&v1.ListKubernetesClustersResponse{
+		KubernetesClusters: protoClusters,
+	}), nil
+}
+
+// UpdateKubernetesCluster updates an existing Kubernetes cluster
+func (s *Service) UpdateKubernetesCluster(_ context.Context, req *connect.Request[v1.UpdateKubernetesClusterRequest]) (*connect.Response[v1.UpdateKubernetesClusterResponse], error) {
+	// Validate the request
+	errors := validation.ValidateUpdateKubernetesClusterRequest(req.Msg)
+	if err := s.HandleValidationErrors(errors); err != nil {
+		return nil, err
+	}
+
+	// Convert proto cluster to storage cluster
+	cluster := base.ConvertProtoK8sToStorage(req.Msg.KubernetesCluster)
+
+	// Process the template
+	renderedTemplate, err := s.Processor.ProcessKubernetesClusterTemplate(cluster)
+	if err != nil {
+		return nil, s.HandleTemplateProcessorError(err)
+	}
+
+	// Set the rendered template
+	cluster.RenderedTemplate = renderedTemplate
+
+	// Update the Kubernetes cluster in storage
+	updatedCluster, err := s.Storage.UpdateKubernetesCluster(cluster)
+	if err != nil {
+		return nil, s.HandleStorageError(err)
+	}
+
+	// Convert storage cluster to proto cluster
+	protoCluster := base.ConvertStorageK8sToProto(updatedCluster)
+
+	// Return the response
+	return connect.NewResponse(&v1.UpdateKubernetesClusterResponse{
+		KubernetesCluster: protoCluster,
+	}), nil
+}
+
+// DeleteKubernetesCluster deletes a Kubernetes cluster by ID
+func (s *Service) DeleteKubernetesCluster(_ context.Context, req *connect.Request[v1.DeleteKubernetesClusterRequest]) (*connect.Response[v1.DeleteKubernetesClusterResponse], error) {
+	// Validate the request
+	errors := validation.ValidateDeleteKubernetesClusterRequest(req.Msg)
+	if err := s.HandleValidationErrors(errors); err != nil {
+		return nil, err
+	}
+
+	// Delete the Kubernetes cluster from storage
+	err := s.Storage.DeleteKubernetesCluster(req.Msg.Id)
+	if err != nil {
+		return nil, s.HandleStorageError(err)
+	}
+
+	// Return the response
+	return connect.NewResponse(&v1.DeleteKubernetesClusterResponse{
+		Success: true,
+	}), nil
 }
