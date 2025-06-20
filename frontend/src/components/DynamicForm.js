@@ -1,4 +1,17 @@
 import React, { useState, useEffect, useRef } from 'react';
+import {
+  TextField,
+  Select,
+  MenuItem,
+  FormControl,
+  InputLabel,
+  FormHelperText,
+  Button,
+  Box,
+  Stack,
+  Typography,
+  FormLabel
+} from '@mui/material';
 
 const DynamicForm = ({ fields, onSubmit, buttonText = "Применить", initialValues = {} }) => {
   const [formData, setFormData] = useState(initialValues);
@@ -48,54 +61,119 @@ const DynamicForm = ({ fields, onSubmit, buttonText = "Применить", init
   };
 
   return (
-    <form onSubmit={handleSubmit}>
-      {fields.map((field) => (
-        <div className="form-group" key={field.name}>
-          <label htmlFor={field.name}>{field.label}</label>
-          {field.type === 'select' ? (
-            <select
-              id={field.name}
-              name={field.name}
-              value={formData[field.name] || ''}
-              onChange={handleChange}
-              required={field.required}
-            >
-              <option value="">Выберите {field.label.toLowerCase()}</option>
-              {field.options.map((option) => (
-                <option key={option.value} value={option.value}>
-                  {option.label}
-                </option>
-              ))}
-            </select>
-          ) : field.type === 'textarea' ? (
-            <textarea
-              id={field.name}
-              name={field.name}
-              value={formData[field.name] || ''}
-              onChange={handleChange}
-              placeholder={field.placeholder}
-              required={field.required}
-              rows={field.rows || 5}
-              className="form-textarea"
-            />
-          ) : (
-            <input
-              type={field.type || 'text'}
-              id={field.name}
-              name={field.name}
-              value={formData[field.name] || ''}
-              onChange={handleChange}
-              placeholder={field.placeholder}
-              required={field.required}
-              min={field.min}
-              max={field.max}
-            />
-          )}
-          {errors[field.name] && <div className="error">{errors[field.name]}</div>}
-        </div>
-      ))}
-      <button type="submit">{buttonText}</button>
-    </form>
+    <Box component="form" id="resource-form" onSubmit={handleSubmit} noValidate sx={{ width: '100%' }}>
+      <Stack spacing={3}>
+        {fields.map((field) => {
+          const error = !!errors[field.name];
+          const helperText = errors[field.name];
+
+          if (field.type === 'select') {
+            return (
+              <FormControl 
+                key={field.name} 
+                fullWidth 
+                error={error} 
+                required={field.required}
+                variant="outlined"
+              >
+                <InputLabel id={`${field.name}-label`}>{field.label}</InputLabel>
+                <Select
+                  labelId={`${field.name}-label`}
+                  id={field.name}
+                  name={field.name}
+                  value={formData[field.name] || ''}
+                  onChange={handleChange}
+                  label={field.label}
+                >
+                  <MenuItem value="">
+                    <em>Выберите {field.label.toLowerCase()}</em>
+                  </MenuItem>
+                  {field.options.map((option) => (
+                    <MenuItem key={option.value} value={option.value}>
+                      {option.label}
+                    </MenuItem>
+                  ))}
+                </Select>
+                {error && <FormHelperText>{helperText}</FormHelperText>}
+              </FormControl>
+            );
+          } else if (field.type === 'textarea') {
+            return (
+              <FormControl key={field.name} fullWidth error={error} required={field.required}>
+                <FormLabel 
+                  htmlFor={field.name}
+                  sx={{ 
+                    mb: 1, 
+                    fontWeight: 'medium',
+                    color: 'text.primary',
+                    '&.Mui-focused': {
+                      color: 'primary.main',
+                    }
+                  }}
+                >
+                  {field.label}
+                </FormLabel>
+                <TextField
+                  id={field.name}
+                  name={field.name}
+                  value={formData[field.name] || ''}
+                  onChange={handleChange}
+                  placeholder={field.placeholder}
+                  multiline
+                  rows={field.rows || 5}
+                  variant="outlined"
+                  error={error}
+                  helperText={helperText}
+                  fullWidth
+                  InputProps={{
+                    sx: {
+                      fontFamily: '"Roboto Mono", monospace',
+                      fontSize: '0.875rem',
+                    }
+                  }}
+                />
+              </FormControl>
+            );
+          } else {
+            return (
+              <TextField
+                key={field.name}
+                id={field.name}
+                name={field.name}
+                label={field.label}
+                type={field.type || 'text'}
+                value={formData[field.name] || ''}
+                onChange={handleChange}
+                placeholder={field.placeholder}
+                required={field.required}
+                error={error}
+                helperText={helperText}
+                fullWidth
+                variant="outlined"
+                InputProps={{
+                  inputProps: {
+                    min: field.min,
+                    max: field.max
+                  }
+                }}
+              />
+            );
+          }
+        })}
+
+        <Box sx={{ mt: 2 }}>
+          <Button 
+            type="submit" 
+            variant="contained" 
+            color="primary" 
+            size="large"
+            sx={{ minWidth: 120 }}
+          >
+            {buttonText}
+          </Button>
+        </Box>
+      </Stack>
+    </Box>
   );
 };
 

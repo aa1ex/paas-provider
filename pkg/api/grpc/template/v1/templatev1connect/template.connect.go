@@ -8,7 +8,7 @@ import (
 	connect "connectrpc.com/connect"
 	context "context"
 	errors "errors"
-	v1 "github.com/paas-provider/pkg/api/grpc/template/v1"
+	v1 "github.com/aa1ex/paas-provider/pkg/api/grpc/template/v1"
 	http "net/http"
 	strings "strings"
 )

@@ -5,7 +5,7 @@ import (
 	"fmt"
 	"text/template"
 
-	"github.com/paas-provider/internal/storage"
+	"github.com/aa1ex/paas-provider/internal/storage"
 )
 
 // TemplateProcessor is responsible for processing templates

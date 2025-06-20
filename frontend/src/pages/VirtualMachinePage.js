@@ -1,4 +1,15 @@
 import React, { useState } from 'react';
+import {
+  Typography,
+  Paper,
+  Box,
+  Alert,
+  AlertTitle,
+  CircularProgress,
+  Divider,
+  Chip
+} from '@mui/material';
+import { Computer as ComputerIcon } from '@mui/icons-material';
 import DynamicForm from '../components/DynamicForm';
 import client from "../client/client";
 
@@ -79,31 +90,90 @@ const VirtualMachinePage = () => {
   };
 
   return (
-    <div>
-      <h2>Создание Виртуальной Машины</h2>
-      <p>Заполните форму для создания новой виртуальной машины.</p>
-      
-      <DynamicForm 
-        fields={vmFields} 
-        onSubmit={handleSubmit} 
-        buttonText="Создать Виртуальную Машину" 
-      />
-      
-      {loading && <p>Загрузка...</p>}
-      
+    <Box>
+      <Box sx={{ mb: 4, display: 'flex', alignItems: 'center' }}>
+        <ComputerIcon sx={{ fontSize: 28, mr: 1, color: 'primary.main' }} />
+        <Typography variant="h4" component="h1" gutterBottom sx={{ fontWeight: 500 }}>
+          Создание Виртуальной Машины
+        </Typography>
+      </Box>
+
+      <Typography variant="body1" paragraph sx={{ mb: 3 }}>
+        Заполните форму для создания новой виртуальной машины. После создания вы получите конфигурацию машины.
+      </Typography>
+
+      <Paper elevation={0} variant="outlined" sx={{ p: 3, mb: 4 }}>
+        <DynamicForm 
+          fields={vmFields} 
+          onSubmit={handleSubmit} 
+          buttonText="Создать Виртуальную Машину" 
+        />
+      </Paper>
+
+      {loading && (
+        <Box sx={{ display: 'flex', justifyContent: 'center', my: 4 }}>
+          <CircularProgress />
+        </Box>
+      )}
+
       {error && (
-        <div className="error">
-          <p>Ошибка: {error}</p>
-        </div>
+        <Alert 
+          severity="error" 
+          variant="outlined" 
+          sx={{ mt: 3, mb: 2 }}
+        >
+          <AlertTitle>Ошибка</AlertTitle>
+          {error}
+        </Alert>
       )}
-      
+
       {result && (
-        <div className="result">
-          <h3>Виртуальная машина создана!</h3>
-          <pre>{result}</pre>
-        </div>
+        <Paper 
+          elevation={0} 
+          variant="outlined" 
+          sx={{ 
+            mt: 4, 
+            p: 3, 
+            backgroundColor: 'rgba(25, 118, 210, 0.04)',
+            borderColor: 'rgba(25, 118, 210, 0.2)'
+          }}
+        >
+          <Box sx={{ display: 'flex', alignItems: 'center', mb: 2 }}>
+            <Chip 
+              label="Успешно" 
+              color="success" 
+              size="small" 
+              sx={{ mr: 2 }} 
+            />
+            <Typography variant="h6" component="h3" sx={{ fontWeight: 500 }}>
+              Виртуальная машина создана!
+            </Typography>
+          </Box>
+
+          <Divider sx={{ mb: 2 }} />
+
+          <Typography variant="subtitle2" gutterBottom sx={{ color: 'text.secondary' }}>
+            Конфигурация:
+          </Typography>
+
+          <Box 
+            component="pre" 
+            sx={{ 
+              p: 2, 
+              backgroundColor: 'background.paper', 
+              borderRadius: 1,
+              border: '1px solid rgba(0, 0, 0, 0.12)',
+              fontFamily: '"Roboto Mono", monospace',
+              fontSize: '0.875rem',
+              overflowX: 'auto',
+              m: 0
+            }}
+          >
+            {result}
+          </Box>
+        </Paper>
       )}
-    </div>
+    </Box>
   );
 };
 

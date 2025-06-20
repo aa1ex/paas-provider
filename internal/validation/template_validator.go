@@ -1,7 +1,7 @@
 package validation
 
 import (
-	v1 "github.com/paas-provider/pkg/api/grpc/template/v1"
+	v1 "github.com/aa1ex/paas-provider/pkg/api/grpc/template/v1"
 )
 
 // ValidateCreateTemplateRequest validates a CreateTemplateRequest
@@ -16,7 +16,7 @@ func ValidateCreateTemplateRequest(req *v1.CreateTemplateRequest) ValidationErro
 	template := req.Template
 	ValidateRequired("name", template.Name, &errors)
 	ValidateRequired("raw_template", template.RawTemplate, &errors)
-	
+
 	// Validate template type
 	if template.Type == v1.Template_TYPE_UNSPECIFIED {
 		errors.Add("type", "must be specified")
@@ -38,7 +38,7 @@ func ValidateUpdateTemplateRequest(req *v1.UpdateTemplateRequest) ValidationErro
 	ValidateRequired("id", template.Id, &errors)
 	ValidateRequired("name", template.Name, &errors)
 	ValidateRequired("raw_template", template.RawTemplate, &errors)
-	
+
 	// Validate template type
 	if template.Type == v1.Template_TYPE_UNSPECIFIED {
 		errors.Add("type", "must be specified")

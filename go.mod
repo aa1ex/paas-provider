@@ -1,4 +1,4 @@
-module github.com/paas-provider
+module github.com/aa1ex/paas-provider
 
 go 1.21
 

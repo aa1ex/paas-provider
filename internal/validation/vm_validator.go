@@ -1,7 +1,7 @@
 package validation
 
 import (
-	v1 "github.com/paas-provider/pkg/api/grpc/virtual_machine/v1"
+	v1 "github.com/aa1ex/paas-provider/pkg/api/grpc/virtual_machine/v1"
 )
 
 // ValidateCreateVirtualMachineRequest validates a CreateVirtualMachineRequest

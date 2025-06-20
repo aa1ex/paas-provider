@@ -1,6 +1,16 @@
 import React, { useState, useEffect } from 'react';
+import {
+  Dialog,
+  DialogTitle,
+  DialogContent,
+  DialogActions,
+  Button,
+  IconButton,
+  Typography,
+  Box
+} from '@mui/material';
+import { Close as CloseIcon } from '@mui/icons-material';
 import DynamicForm from './DynamicForm';
-import './ResourceForm.css';
 
 const ResourceForm = ({ 
   resource, 
@@ -30,35 +40,74 @@ const ResourceForm = ({
     if (resource && resource.id) {
       formData.id = resource.id;
     }
-    
+
     // If the resource has a templateId, preserve it
     if (resource && resource.templateId) {
       formData.templateId = resource.templateId;
     }
-    
+
     onSubmit(formData);
   };
 
   return (
-    <div className="resource-form-overlay">
-      <div className="resource-form">
-        <div className="resource-form-header">
-          <h2>{title || (resource ? 'Редактирование ресурса' : 'Создание ресурса')}</h2>
-          <button className="close-button" onClick={onCancel}>×</button>
-        </div>
-        <div className="resource-form-content">
-          <DynamicForm 
-            fields={fields} 
-            onSubmit={handleSubmit} 
-            buttonText={submitButtonText}
-            initialValues={initialValues}
-          />
-        </div>
-        <div className="resource-form-footer">
-          <button className="cancel-button" onClick={onCancel}>Отмена</button>
-        </div>
-      </div>
-    </div>
+    <Dialog
+      open={true}
+      onClose={onCancel}
+      maxWidth="md"
+      fullWidth
+      PaperProps={{
+        sx: {
+          borderRadius: 2,
+          overflow: 'hidden'
+        }
+      }}
+    >
+      <DialogTitle
+        sx={{
+          display: 'flex',
+          justifyContent: 'space-between',
+          alignItems: 'center',
+          p: 2,
+          backgroundColor: 'background.default'
+        }}
+      >
+        <Typography variant="h6" component="div">
+          {title || (resource ? 'Редактирование ресурса' : 'Создание ресурса')}
+        </Typography>
+        <IconButton
+          edge="end"
+          color="inherit"
+          onClick={onCancel}
+          aria-label="close"
+        >
+          <CloseIcon />
+        </IconButton>
+      </DialogTitle>
+
+      <DialogContent dividers sx={{ p: 3 }}>
+        <DynamicForm 
+          fields={fields} 
+          onSubmit={handleSubmit} 
+          buttonText={submitButtonText}
+          initialValues={initialValues}
+        />
+      </DialogContent>
+
+      <DialogActions sx={{ p: 2, justifyContent: 'space-between' }}>
+        <Button onClick={onCancel} variant="outlined" color="inherit">
+          Отмена
+        </Button>
+        <Button 
+          type="submit" 
+          variant="contained" 
+          color="primary"
+          form="resource-form" // Connect to the form in DynamicForm
+          sx={{ minWidth: 120 }}
+        >
+          {submitButtonText}
+        </Button>
+      </DialogActions>
+    </Dialog>
   );
 };
 

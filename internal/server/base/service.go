@@ -3,9 +3,9 @@ package base
 import (
 	"connectrpc.com/connect"
 	"fmt"
-	"github.com/paas-provider/internal/storage"
-	"github.com/paas-provider/internal/tmplproc"
-	"github.com/paas-provider/internal/validation"
+	"github.com/aa1ex/paas-provider/internal/storage"
+	"github.com/aa1ex/paas-provider/internal/tmplproc"
+	"github.com/aa1ex/paas-provider/internal/validation"
 )
 
 // Service is a base service that provides common functionality

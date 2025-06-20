@@ -3,7 +3,7 @@ managed:
   enabled: true
   override:
     - file_option: go_package_prefix
-      value: github.com/paas-provider/pkg/api/grpc
+      value: github.com/aa1ex/paas-provider/pkg/api/grpc
 plugins:
   - local: protoc-gen-go
     out: pkg/api/grpc

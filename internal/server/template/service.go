@@ -3,13 +3,13 @@ package template
 import (
 	"connectrpc.com/connect"
 	"context"
-	"github.com/paas-provider/internal/server/base"
-	"github.com/paas-provider/internal/server/util"
-	"github.com/paas-provider/internal/storage"
-	"github.com/paas-provider/internal/tmplproc"
-	"github.com/paas-provider/internal/validation"
-	v1 "github.com/paas-provider/pkg/api/grpc/template/v1"
-	"github.com/paas-provider/pkg/api/grpc/template/v1/templatev1connect"
+	"github.com/aa1ex/paas-provider/internal/server/base"
+	"github.com/aa1ex/paas-provider/internal/server/util"
+	"github.com/aa1ex/paas-provider/internal/storage"
+	"github.com/aa1ex/paas-provider/internal/tmplproc"
+	"github.com/aa1ex/paas-provider/internal/validation"
+	v1 "github.com/aa1ex/paas-provider/pkg/api/grpc/template/v1"
+	"github.com/aa1ex/paas-provider/pkg/api/grpc/template/v1/templatev1connect"
 )
 
 type Service struct {

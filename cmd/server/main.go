@@ -1,13 +1,13 @@
 package main
 
 import (
-	"github.com/paas-provider/internal/server/k8s"
-	"github.com/paas-provider/internal/server/template"
-	"github.com/paas-provider/internal/server/vm"
-	"github.com/paas-provider/internal/tmplproc"
-	"github.com/paas-provider/pkg/api/grpc/kubernetes_cluster/v1/kubernetes_clusterv1connect"
-	"github.com/paas-provider/pkg/api/grpc/template/v1/templatev1connect"
-	"github.com/paas-provider/pkg/api/grpc/virtual_machine/v1/virtual_machinev1connect"
+	"github.com/aa1ex/paas-provider/internal/server/k8s"
+	"github.com/aa1ex/paas-provider/internal/server/template"
+	"github.com/aa1ex/paas-provider/internal/server/vm"
+	"github.com/aa1ex/paas-provider/internal/tmplproc"
+	"github.com/aa1ex/paas-provider/pkg/api/grpc/kubernetes_cluster/v1/kubernetes_clusterv1connect"
+	"github.com/aa1ex/paas-provider/pkg/api/grpc/template/v1/templatev1connect"
+	"github.com/aa1ex/paas-provider/pkg/api/grpc/virtual_machine/v1/virtual_machinev1connect"
 	"github.com/rs/cors"
 	"golang.org/x/net/http2"
 	"golang.org/x/net/http2/h2c"
@@ -16,7 +16,7 @@ import (
 	"net/http"
 	"strconv"
 
-	"github.com/paas-provider/internal/storage"
+	"github.com/aa1ex/paas-provider/internal/storage"
 )
 
 func main() {

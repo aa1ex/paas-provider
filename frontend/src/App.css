@@ -1,162 +1,33 @@
-.App {
-  text-align: center;
-  font-family: Arial, sans-serif;
-  max-width: 1200px;
-  margin: 0 auto;
-  padding: 20px;
-}
+/* Legacy styles for components that haven't been fully migrated to Material UI yet */
 
-.App-header {
-  background-color: #282c34;
-  padding: 20px;
-  color: white;
-  border-radius: 5px;
-  margin-bottom: 20px;
-}
-
-.App-header h1 {
-  margin: 0;
-  padding: 0;
-}
-
-.App-header nav {
-  display: flex;
-  justify-content: center;
-  margin-top: 20px;
-}
-
-.nav-section {
-  margin: 0 20px;
-}
-
-.nav-section h3 {
-  color: white;
-  margin-bottom: 10px;
-  font-size: 1.1rem;
-}
-
-.App-header nav ul {
-  list-style-type: none;
-  padding: 0;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-}
-
-.App-header nav ul li {
-  margin: 5px 0;
-  width: 100%;
-}
-
-.App-header nav ul li a {
-  color: white;
-  text-decoration: none;
-  font-weight: bold;
-  padding: 8px 15px;
-  border-radius: 5px;
-  background-color: #61dafb;
-  transition: background-color 0.3s;
-  display: block;
-  text-align: center;
-  width: 100%;
-  box-sizing: border-box;
-}
-
-.App-header nav ul li a:hover {
-  background-color: #21a1c4;
-}
-
-.App-header nav ul li a.active {
-  background-color: #0088cc;
-}
-
-/* Placeholder styles */
-.placeholder {
-  padding: 20px;
-  background-color: #f8f9fa;
-  border-radius: 5px;
-  text-align: center;
-  color: #666;
-  margin-top: 20px;
-  border: 1px dashed #ddd;
-}
-
-main {
-  padding: 20px;
-  background-color: #f5f5f5;
-  border-radius: 5px;
-  min-height: 400px;
-}
-
-.welcome {
-  font-size: 1.5em;
-  margin-top: 100px;
-}
-
-footer {
-  margin-top: 20px;
-  padding: 10px;
-  background-color: #282c34;
-  color: white;
-  border-radius: 5px;
-}
-
-form {
-  max-width: 600px;
-  margin: 0 auto;
-  text-align: left;
-}
-
-.form-group {
-  margin-bottom: 15px;
-}
-
-label {
-  display: block;
-  margin-bottom: 5px;
-  font-weight: bold;
-}
-
-input, select, textarea {
-  width: 100%;
-  padding: 8px;
-  border: 1px solid #ddd;
-  border-radius: 4px;
-  box-sizing: border-box;
-}
-
-textarea.form-textarea {
-  min-height: 100px;
-  resize: vertical;
-  font-family: monospace;
-  font-size: 14px;
-}
-
-button {
-  background-color: #61dafb;
-  color: white;
-  border: none;
-  padding: 10px 20px;
-  border-radius: 4px;
-  cursor: pointer;
-  font-weight: bold;
-  margin-top: 10px;
-}
-
-button:hover {
-  background-color: #21a1c4;
-}
-
+/* Result display - will be replaced with Material UI components in future updates */
 .result {
-  margin-top: 20px;
-  padding: 15px;
-  background-color: #e8f4f8;
-  border-radius: 5px;
+  margin-top: 24px;
+  padding: 16px;
+  background-color: rgba(33, 150, 243, 0.08);
+  border-radius: 8px;
   text-align: left;
   white-space: pre-wrap;
+  font-family: 'Roboto Mono', monospace;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
 }
 
-.error {
-  color: red;
-  margin-top: 10px;
+.result h3 {
+  margin-top: 0;
+  color: #1976d2;
+  font-weight: 500;
+}
+
+.result pre {
+  margin: 0;
+  font-size: 14px;
+  line-height: 1.5;
+}
+
+/* Welcome message - will be replaced with Material UI components in future updates */
+.welcome {
+  text-align: center;
+  margin-top: 64px;
+  font-size: 1.5rem;
+  color: #1976d2;
 }

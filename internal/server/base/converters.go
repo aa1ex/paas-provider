@@ -1,10 +1,10 @@
 package base
 
 import (
-	"github.com/paas-provider/internal/storage"
-	k8sv1 "github.com/paas-provider/pkg/api/grpc/kubernetes_cluster/v1"
-	templatev1 "github.com/paas-provider/pkg/api/grpc/template/v1"
-	vmv1 "github.com/paas-provider/pkg/api/grpc/virtual_machine/v1"
+	"github.com/aa1ex/paas-provider/internal/storage"
+	k8sv1 "github.com/aa1ex/paas-provider/pkg/api/grpc/kubernetes_cluster/v1"
+	templatev1 "github.com/aa1ex/paas-provider/pkg/api/grpc/template/v1"
+	vmv1 "github.com/aa1ex/paas-provider/pkg/api/grpc/virtual_machine/v1"
 )
 
 // ConvertStorageTemplateToProto converts a storage.Template to a templatev1.Template
