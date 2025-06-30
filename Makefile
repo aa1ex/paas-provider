@@ -109,6 +109,10 @@ fmt:
 lint:
 	$(GOLINT) run ./...
 
+.PHONY: lint-fix
+lint-fix:
+	$(GOLINT) run --fix  ./...
+
 .PHONY: vet
 vet:
 	$(GO) vet ./...
@@ -176,6 +180,7 @@ help:
 	@echo "  dev-all        - Run both backend and frontend in development mode"
 	@echo "  fmt            - Format Go code"
 	@echo "  lint           - Lint Go code"
+	@echo "  lint-fix       - Lint and fix Go code"
 	@echo "  lint-proto     - Lint Protocol Buffer definitions"
 	@echo "  breaking-proto - Check for breaking changes in Protocol Buffer definitions"
 	@echo "  vet            - Vet Go code for potential issues"
