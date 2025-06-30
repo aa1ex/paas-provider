@@ -56,10 +56,19 @@ message DeleteKubernetesClusterResponse {
   bool success = 1;
 }
 
+message GetKubernetesClusterKubeconfigRequest {
+  string id = 1;
+}
+
+message GetKubernetesClusterKubeconfigResponse {
+  string kubeconfig = 1;
+}
+
 service KubernetesClusterService {
   rpc CreateKubernetesCluster(CreateKubernetesClusterRequest) returns (CreateKubernetesClusterResponse);
   rpc GetKubernetesCluster(GetKubernetesClusterRequest) returns (GetKubernetesClusterResponse);
   rpc ListKubernetesClusters(ListKubernetesClustersRequest) returns (ListKubernetesClustersResponse);
   rpc UpdateKubernetesCluster(UpdateKubernetesClusterRequest) returns (UpdateKubernetesClusterResponse);
   rpc DeleteKubernetesCluster(DeleteKubernetesClusterRequest) returns (DeleteKubernetesClusterResponse);
+  rpc GetKubernetesClusterKubeconfig(GetKubernetesClusterKubeconfigRequest) returns (GetKubernetesClusterKubeconfigResponse);
 }

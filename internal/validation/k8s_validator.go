@@ -72,3 +72,24 @@ func ValidateDeleteKubernetesClusterRequest(req *v1.DeleteKubernetesClusterReque
 
 	return errors
 }
+
+// TODO: Implement ValidateGetKubernetesClusterKubeconfigRequest after code generation
+// This function should be implemented after running the protobuf compiler to generate
+// the Go code from the updated proto file.
+//
+// Example implementation:
+/*
+// ValidateGetKubernetesClusterKubeconfigRequest validates a GetKubernetesClusterKubeconfigRequest
+func ValidateGetKubernetesClusterKubeconfigRequest(req *v1.GetKubernetesClusterKubeconfigRequest) ValidationErrors {
+	var errors ValidationErrors
+
+	if req == nil {
+		errors.Add("request", "is required")
+		return errors
+	}
+
+	ValidateRequired("id", req.Id, &errors)
+
+	return errors
+}
+*/

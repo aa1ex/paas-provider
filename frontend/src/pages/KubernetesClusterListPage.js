@@ -4,8 +4,8 @@ import ResourceDetail from '../components/ResourceDetail';
 import ResourceForm from '../components/ResourceForm';
 import client from '../client/client';
 import './KubernetesClusterListPage.css';
-import {Button} from "@mui/material";
-import {Add as AddIcon} from "@mui/icons-material";
+import {Button, IconButton, Tooltip} from "@mui/material";
+import {Add as AddIcon, CloudDownload as DownloadIcon} from "@mui/icons-material";
 
 const KubernetesClusterListPage = () => {
   const [clusters, setClusters] = useState([]);
@@ -21,7 +21,25 @@ const KubernetesClusterListPage = () => {
     { key: 'name', label: 'Имя' },
     { key: 'region', label: 'Регион' },
     { key: 'nodeCount', label: 'Количество узлов' },
-    { key: 'version', label: 'Версия Kubernetes' }
+    { key: 'version', label: 'Версия Kubernetes' },
+    { 
+      key: 'kubeconfig', 
+      label: 'Kubeconfig', 
+      render: (cluster) => (
+        <Tooltip title="Скачать Kubeconfig">
+          <IconButton 
+            size="small" 
+            color="primary" 
+            onClick={(e) => {
+              e.stopPropagation();
+              handleDownloadKubeconfig(cluster);
+            }}
+          >
+            <DownloadIcon />
+          </IconButton>
+        </Tooltip>
+      )
+    }
   ];
 
   // Define fields for the cluster detail view
@@ -142,6 +160,38 @@ const KubernetesClusterListPage = () => {
     } catch (err) {
       setError('Ошибка при удалении кластера: ' + (err.message || 'Неизвестная ошибка'));
       console.error('Error deleting cluster:', err);
+    }
+  };
+
+  // Handle download kubeconfig
+  const handleDownloadKubeconfig = async (cluster) => {
+    try {
+      // Call the API to get the kubeconfig
+      const response = await client.kubernetesClusters.getKubernetesClusterKubeconfig({ id: cluster.id });
+
+      // Create a blob with the kubeconfig content
+      const blob = new Blob([response.kubeconfig], { type: 'text/plain' });
+
+      // Create a URL for the blob
+      const url = URL.createObjectURL(blob);
+
+      // Create a temporary link element
+      const link = document.createElement('a');
+      link.href = url;
+      link.download = `kubeconfig-${cluster.name}.yaml`;
+
+      // Append the link to the document
+      document.body.appendChild(link);
+
+      // Trigger the download
+      link.click();
+
+      // Clean up
+      document.body.removeChild(link);
+      URL.revokeObjectURL(url);
+    } catch (err) {
+      setError('Ошибка при скачивании kubeconfig: ' + (err.message || 'Неизвестная ошибка'));
+      console.error('Error downloading kubeconfig:', err);
     }
   };
 

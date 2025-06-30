@@ -149,3 +149,30 @@ func (s *Service) DeleteKubernetesCluster(_ context.Context, req *connect.Reques
 		Success: true,
 	}), nil
 }
+
+// TODO: Implement GetKubernetesClusterKubeconfig after code generation
+// This method should be implemented after running the protobuf compiler to generate
+// the Go code from the updated proto file. The implementation should:
+// 1. Validate the request using a new validation function
+// 2. Retrieve the Kubernetes cluster from storage
+// 3. Return the rendered template as the kubeconfig
+// Example implementation:
+func (s *Service) GetKubernetesClusterKubeconfig(_ context.Context, req *connect.Request[v1.GetKubernetesClusterKubeconfigRequest]) (*connect.Response[v1.GetKubernetesClusterKubeconfigResponse], error) {
+	// Validate the request
+	//errors := validation.ValidateGetKubernetesClusterKubeconfigRequest(req.Msg)
+	//if err := s.HandleValidationErrors(errors); err != nil {
+	//	return nil, err
+	//}
+
+	// Get the Kubernetes cluster from storage
+	cluster, err := s.Storage.GetKubernetesCluster(req.Msg.Id)
+	if err != nil {
+		return nil, s.HandleStorageError(err)
+	}
+
+	// Return the rendered template as the kubeconfig
+	// Note: This assumes that the rendered template is the kubeconfig or contains it
+	return connect.NewResponse(&v1.GetKubernetesClusterKubeconfigResponse{
+		Kubeconfig: cluster.RenderedTemplate,
+	}), nil
+}

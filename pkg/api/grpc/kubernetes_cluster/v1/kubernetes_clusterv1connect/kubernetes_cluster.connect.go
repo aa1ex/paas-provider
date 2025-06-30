@@ -48,6 +48,9 @@ const (
 	// KubernetesClusterServiceDeleteKubernetesClusterProcedure is the fully-qualified name of the
 	// KubernetesClusterService's DeleteKubernetesCluster RPC.
 	KubernetesClusterServiceDeleteKubernetesClusterProcedure = "/kubernetes_cluster.v1.KubernetesClusterService/DeleteKubernetesCluster"
+	// KubernetesClusterServiceGetKubernetesClusterKubeconfigProcedure is the fully-qualified name of
+	// the KubernetesClusterService's GetKubernetesClusterKubeconfig RPC.
+	KubernetesClusterServiceGetKubernetesClusterKubeconfigProcedure = "/kubernetes_cluster.v1.KubernetesClusterService/GetKubernetesClusterKubeconfig"
 )
 
 // KubernetesClusterServiceClient is a client for the kubernetes_cluster.v1.KubernetesClusterService
@@ -58,6 +61,7 @@ type KubernetesClusterServiceClient interface {
 	ListKubernetesClusters(context.Context, *connect.Request[v1.ListKubernetesClustersRequest]) (*connect.Response[v1.ListKubernetesClustersResponse], error)
 	UpdateKubernetesCluster(context.Context, *connect.Request[v1.UpdateKubernetesClusterRequest]) (*connect.Response[v1.UpdateKubernetesClusterResponse], error)
 	DeleteKubernetesCluster(context.Context, *connect.Request[v1.DeleteKubernetesClusterRequest]) (*connect.Response[v1.DeleteKubernetesClusterResponse], error)
+	GetKubernetesClusterKubeconfig(context.Context, *connect.Request[v1.GetKubernetesClusterKubeconfigRequest]) (*connect.Response[v1.GetKubernetesClusterKubeconfigResponse], error)
 }
 
 // NewKubernetesClusterServiceClient constructs a client for the
@@ -102,16 +106,23 @@ func NewKubernetesClusterServiceClient(httpClient connect.HTTPClient, baseURL st
 			connect.WithSchema(kubernetesClusterServiceMethods.ByName("DeleteKubernetesCluster")),
 			connect.WithClientOptions(opts...),
 		),
+		getKubernetesClusterKubeconfig: connect.NewClient[v1.GetKubernetesClusterKubeconfigRequest, v1.GetKubernetesClusterKubeconfigResponse](
+			httpClient,
+			baseURL+KubernetesClusterServiceGetKubernetesClusterKubeconfigProcedure,
+			connect.WithSchema(kubernetesClusterServiceMethods.ByName("GetKubernetesClusterKubeconfig")),
+			connect.WithClientOptions(opts...),
+		),
 	}
 }
 
 // kubernetesClusterServiceClient implements KubernetesClusterServiceClient.
 type kubernetesClusterServiceClient struct {
-	createKubernetesCluster *connect.Client[v1.CreateKubernetesClusterRequest, v1.CreateKubernetesClusterResponse]
-	getKubernetesCluster    *connect.Client[v1.GetKubernetesClusterRequest, v1.GetKubernetesClusterResponse]
-	listKubernetesClusters  *connect.Client[v1.ListKubernetesClustersRequest, v1.ListKubernetesClustersResponse]
-	updateKubernetesCluster *connect.Client[v1.UpdateKubernetesClusterRequest, v1.UpdateKubernetesClusterResponse]
-	deleteKubernetesCluster *connect.Client[v1.DeleteKubernetesClusterRequest, v1.DeleteKubernetesClusterResponse]
+	createKubernetesCluster        *connect.Client[v1.CreateKubernetesClusterRequest, v1.CreateKubernetesClusterResponse]
+	getKubernetesCluster           *connect.Client[v1.GetKubernetesClusterRequest, v1.GetKubernetesClusterResponse]
+	listKubernetesClusters         *connect.Client[v1.ListKubernetesClustersRequest, v1.ListKubernetesClustersResponse]
+	updateKubernetesCluster        *connect.Client[v1.UpdateKubernetesClusterRequest, v1.UpdateKubernetesClusterResponse]
+	deleteKubernetesCluster        *connect.Client[v1.DeleteKubernetesClusterRequest, v1.DeleteKubernetesClusterResponse]
+	getKubernetesClusterKubeconfig *connect.Client[v1.GetKubernetesClusterKubeconfigRequest, v1.GetKubernetesClusterKubeconfigResponse]
 }
 
 // CreateKubernetesCluster calls
@@ -143,6 +154,12 @@ func (c *kubernetesClusterServiceClient) DeleteKubernetesCluster(ctx context.Con
 	return c.deleteKubernetesCluster.CallUnary(ctx, req)
 }
 
+// GetKubernetesClusterKubeconfig calls
+// kubernetes_cluster.v1.KubernetesClusterService.GetKubernetesClusterKubeconfig.
+func (c *kubernetesClusterServiceClient) GetKubernetesClusterKubeconfig(ctx context.Context, req *connect.Request[v1.GetKubernetesClusterKubeconfigRequest]) (*connect.Response[v1.GetKubernetesClusterKubeconfigResponse], error) {
+	return c.getKubernetesClusterKubeconfig.CallUnary(ctx, req)
+}
+
 // KubernetesClusterServiceHandler is an implementation of the
 // kubernetes_cluster.v1.KubernetesClusterService service.
 type KubernetesClusterServiceHandler interface {
@@ -151,6 +168,7 @@ type KubernetesClusterServiceHandler interface {
 	ListKubernetesClusters(context.Context, *connect.Request[v1.ListKubernetesClustersRequest]) (*connect.Response[v1.ListKubernetesClustersResponse], error)
 	UpdateKubernetesCluster(context.Context, *connect.Request[v1.UpdateKubernetesClusterRequest]) (*connect.Response[v1.UpdateKubernetesClusterResponse], error)
 	DeleteKubernetesCluster(context.Context, *connect.Request[v1.DeleteKubernetesClusterRequest]) (*connect.Response[v1.DeleteKubernetesClusterResponse], error)
+	GetKubernetesClusterKubeconfig(context.Context, *connect.Request[v1.GetKubernetesClusterKubeconfigRequest]) (*connect.Response[v1.GetKubernetesClusterKubeconfigResponse], error)
 }
 
 // NewKubernetesClusterServiceHandler builds an HTTP handler from the service implementation. It
@@ -190,6 +208,12 @@ func NewKubernetesClusterServiceHandler(svc KubernetesClusterServiceHandler, opt
 		connect.WithSchema(kubernetesClusterServiceMethods.ByName("DeleteKubernetesCluster")),
 		connect.WithHandlerOptions(opts...),
 	)
+	kubernetesClusterServiceGetKubernetesClusterKubeconfigHandler := connect.NewUnaryHandler(
+		KubernetesClusterServiceGetKubernetesClusterKubeconfigProcedure,
+		svc.GetKubernetesClusterKubeconfig,
+		connect.WithSchema(kubernetesClusterServiceMethods.ByName("GetKubernetesClusterKubeconfig")),
+		connect.WithHandlerOptions(opts...),
+	)
 	return "/kubernetes_cluster.v1.KubernetesClusterService/", http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		switch r.URL.Path {
 		case KubernetesClusterServiceCreateKubernetesClusterProcedure:
@@ -202,6 +226,8 @@ func NewKubernetesClusterServiceHandler(svc KubernetesClusterServiceHandler, opt
 			kubernetesClusterServiceUpdateKubernetesClusterHandler.ServeHTTP(w, r)
 		case KubernetesClusterServiceDeleteKubernetesClusterProcedure:
 			kubernetesClusterServiceDeleteKubernetesClusterHandler.ServeHTTP(w, r)
+		case KubernetesClusterServiceGetKubernetesClusterKubeconfigProcedure:
+			kubernetesClusterServiceGetKubernetesClusterKubeconfigHandler.ServeHTTP(w, r)
 		default:
 			http.NotFound(w, r)
 		}
@@ -229,4 +255,8 @@ func (UnimplementedKubernetesClusterServiceHandler) UpdateKubernetesCluster(cont
 
 func (UnimplementedKubernetesClusterServiceHandler) DeleteKubernetesCluster(context.Context, *connect.Request[v1.DeleteKubernetesClusterRequest]) (*connect.Response[v1.DeleteKubernetesClusterResponse], error) {
 	return nil, connect.NewError(connect.CodeUnimplemented, errors.New("kubernetes_cluster.v1.KubernetesClusterService.DeleteKubernetesCluster is not implemented"))
+}
+
+func (UnimplementedKubernetesClusterServiceHandler) GetKubernetesClusterKubeconfig(context.Context, *connect.Request[v1.GetKubernetesClusterKubeconfigRequest]) (*connect.Response[v1.GetKubernetesClusterKubeconfigResponse], error) {
+	return nil, connect.NewError(connect.CodeUnimplemented, errors.New("kubernetes_cluster.v1.KubernetesClusterService.GetKubernetesClusterKubeconfig is not implemented"))
 }
