@@ -29,5 +29,7 @@ spec:
           resources:
             {{- toYaml .Values.resources.frontend | nindent 12 }}
           env:
-            - name: SERVER_URL
-              value: "http://{{ .Release.Name }}-server:{{ .Values.service.server.port }}"
+            - name: SERVER_HOST
+              value: "{{ .Release.Name }}-server"
+            - name: SERVER_PORT
+              value: "{{ .Values.service.server.port }}"

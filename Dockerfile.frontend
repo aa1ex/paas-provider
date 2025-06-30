@@ -22,58 +22,10 @@ COPY --from=builder /app/build /usr/share/nginx/html
 
 # Create custom nginx config
 RUN rm /etc/nginx/conf.d/default.conf
-RUN echo 'server { \
-    listen 80; \
-    server_name localhost; \
-    root /usr/share/nginx/html; \
-    index index.html; \
-    \
-    # Handle static files \
-    location / { \
-        try_files $uri $uri/ /index.html; \
-    } \
-    \
-    # Proxy API requests to the backend server \
-    location /api/ { \
-        proxy_pass http://server:8080/; \
-        proxy_http_version 1.1; \
-        proxy_set_header Upgrade $http_upgrade; \
-        proxy_set_header Connection "upgrade"; \
-        proxy_set_header Host $host; \
-        proxy_cache_bypass $http_upgrade; \
-    } \
-    \
-    # Proxy Connect RPC requests to the backend server \
-    location /kubernetes_cluster.v1.KubernetesClusterService/ { \
-        proxy_pass http://server:8080; \
-        proxy_http_version 1.1; \
-        proxy_set_header Upgrade $http_upgrade; \
-        proxy_set_header Connection "upgrade"; \
-        proxy_set_header Host $host; \
-        proxy_cache_bypass $http_upgrade; \
-    } \
-    \
-    location /template.v1.TemplateService/ { \
-        proxy_pass http://server:8080; \
-        proxy_http_version 1.1; \
-        proxy_set_header Upgrade $http_upgrade; \
-        proxy_set_header Connection "upgrade"; \
-        proxy_set_header Host $host; \
-        proxy_cache_bypass $http_upgrade; \
-    } \
-    \
-    location /virtual_machine.v1.VirtualMachineService/ { \
-        proxy_pass http://server:8080; \
-        proxy_http_version 1.1; \
-        proxy_set_header Upgrade $http_upgrade; \
-        proxy_set_header Connection "upgrade"; \
-        proxy_set_header Host $host; \
-        proxy_cache_bypass $http_upgrade; \
-    } \
-}' > /etc/nginx/conf.d/default.conf
+COPY nginx.conf /etc/nginx/conf.d/default.conf.template
+
+# Use environment variables in nginx config
+CMD ["/bin/sh", "-c", "envsubst '$$SERVER_HOST $$SERVER_PORT' < /etc/nginx/conf.d/default.conf.template > /etc/nginx/conf.d/default.conf && nginx -g 'daemon off;'"]
 
 # Expose port 80
 EXPOSE 80
-
-# Start nginx
-CMD ["nginx", "-g", "daemon off;"]

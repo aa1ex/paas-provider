@@ -148,13 +148,25 @@ clean-frontend:
 	rm -rf $(FRONTEND_DIR)/node_modules
 
 # Docker
+.PHONY: docker-build-server
+docker-build-server:
+	docker build -t paas-provider-server -f Dockerfile.server .
+
+.PHONY: docker-build-frontend
+docker-build-frontend:
+	docker build -t paas-provider-frontend -f Dockerfile.frontend .
+
 .PHONY: docker-build
-docker-build:
-	docker build -t paas-provider .
+docker-build: docker-build-server docker-build-frontend
 
 .PHONY: docker-run
 docker-run:
-	docker run -p 8080:8080 paas-provider
+	docker run -p 8080:8080 paas-provider-server
+
+.PHONY: kind-load-images
+kind-load-images: docker-build
+	kind load docker-image paas-provider-server
+	kind load docker-image paas-provider-frontend
 
 # Helm
 .PHONY: helm-lint
@@ -176,6 +188,10 @@ helm-upgrade:
 .PHONY: helm-uninstall
 helm-uninstall:
 	helm uninstall paas-provider
+
+.PHONY: helm-deploy-kind
+helm-deploy-kind: kind-load-images
+	helm upgrade --install paas-provider charts/paas-provider --namespace default --create-namespace
 
 # Help
 .PHONY: help
@@ -210,11 +226,15 @@ help:
 	@echo "  test-backend   - Run backend tests"
 	@echo "  test-frontend  - Run frontend tests"
 	@echo "  clean          - Clean build artifacts"
-	@echo "  docker-build   - Build Docker image"
+	@echo "  docker-build-server - Build server Docker image"
+	@echo "  docker-build-frontend - Build frontend Docker image"
+	@echo "  docker-build   - Build all Docker images"
 	@echo "  docker-run     - Run Docker container"
+	@echo "  kind-load-images - Build and load Docker images into Kind cluster"
 	@echo "  helm-lint      - Lint the Helm chart"
 	@echo "  helm-template  - Render the Helm templates locally"
 	@echo "  helm-install   - Install the Helm chart"
 	@echo "  helm-upgrade   - Upgrade the Helm chart"
 	@echo "  helm-uninstall - Uninstall the Helm chart"
+	@echo "  helm-deploy-kind - Deploy the Helm chart to a local Kind cluster"
 	@echo "  help           - Show this help message"
