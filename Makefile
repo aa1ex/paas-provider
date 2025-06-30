@@ -156,6 +156,27 @@ docker-build:
 docker-run:
 	docker run -p 8080:8080 paas-provider
 
+# Helm
+.PHONY: helm-lint
+helm-lint:
+	helm lint charts/paas-provider
+
+.PHONY: helm-template
+helm-template:
+	helm template paas-provider charts/paas-provider
+
+.PHONY: helm-install
+helm-install:
+	helm install paas-provider charts/paas-provider
+
+.PHONY: helm-upgrade
+helm-upgrade:
+	helm upgrade paas-provider charts/paas-provider
+
+.PHONY: helm-uninstall
+helm-uninstall:
+	helm uninstall paas-provider
+
 # Help
 .PHONY: help
 help:
@@ -191,4 +212,9 @@ help:
 	@echo "  clean          - Clean build artifacts"
 	@echo "  docker-build   - Build Docker image"
 	@echo "  docker-run     - Run Docker container"
+	@echo "  helm-lint      - Lint the Helm chart"
+	@echo "  helm-template  - Render the Helm templates locally"
+	@echo "  helm-install   - Install the Helm chart"
+	@echo "  helm-upgrade   - Upgrade the Helm chart"
+	@echo "  helm-uninstall - Uninstall the Helm chart"
 	@echo "  help           - Show this help message"

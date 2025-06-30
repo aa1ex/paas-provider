@@ -1,0 +1,20 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: {{ .Release.Name }}-templates
+  labels:
+    app: {{ .Release.Name }}
+    chart: {{ .Chart.Name }}-{{ .Chart.Version }}
+    release: {{ .Release.Name }}
+data:
+  kubernetes-template.tmpl: |
+    Name: {{ "{{ .Name }}" }}
+    Region: {{ "{{ .Region }}" }}
+    Node Count: {{ "{{ .NodeCount }}" }}
+    Kubernetes Version: {{ "{{ .Version }}" }}
+  
+  vm-template.tmpl: |
+    Name: {{ "{{ .Name }}" }}
+    CPU: {{ "{{ .CPU }}" }} cores
+    Memory: {{ "{{ .Memory }}" }} MB
+    OS: {{ "{{ .OS }}" }}

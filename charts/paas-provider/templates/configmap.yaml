@@ -1,0 +1,22 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: {{ .Release.Name }}-config
+  labels:
+    app: {{ .Release.Name }}
+    chart: {{ .Chart.Name }}-{{ .Chart.Version }}
+    release: {{ .Release.Name }}
+data:
+  config.yaml: |
+    server:
+      port: {{ .Values.config.server.port }}
+    
+    templates:
+      vm:
+        id: {{ .Values.config.templates.vm.id | quote }}
+        name: {{ .Values.config.templates.vm.name | quote }}
+        file: {{ .Values.config.templates.vm.file | quote }}
+      kubernetes:
+        id: {{ .Values.config.templates.kubernetes.id | quote }}
+        name: {{ .Values.config.templates.kubernetes.name | quote }}
+        file: {{ .Values.config.templates.kubernetes.file | quote }}

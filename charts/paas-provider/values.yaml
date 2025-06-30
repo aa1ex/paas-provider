@@ -1,0 +1,64 @@
+# Default values for paas-provider.
+# This is a YAML-formatted file.
+
+replicaCount:
+  server: 1
+  frontend: 1
+
+image:
+  server:
+    repository: paas-provider-server
+    tag: latest
+    pullPolicy: IfNotPresent
+  frontend:
+    repository: paas-provider-frontend
+    tag: latest
+    pullPolicy: IfNotPresent
+
+service:
+  server:
+    type: ClusterIP
+    port: 8080
+  frontend:
+    type: ClusterIP
+    port: 80
+
+ingress:
+  enabled: false
+  className: ""
+  annotations: {}
+  hosts:
+    - host: chart-example.local
+      paths:
+        - path: /
+          pathType: ImplementationSpecific
+  tls: []
+
+resources:
+  server:
+    limits:
+      cpu: 500m
+      memory: 512Mi
+    requests:
+      cpu: 100m
+      memory: 128Mi
+  frontend:
+    limits:
+      cpu: 300m
+      memory: 256Mi
+    requests:
+      cpu: 100m
+      memory: 128Mi
+
+config:
+  server:
+    port: 8080
+  templates:
+    vm:
+      id: "vm-template-1"
+      name: "Basic VM Template"
+      file: "templates/vm-template.tmpl"
+    kubernetes:
+      id: "k8s-template-1"
+      name: "Basic Kubernetes Template"
+      file: "templates/kubernetes-template.tmpl"
