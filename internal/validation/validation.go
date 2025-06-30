@@ -5,22 +5,22 @@ import (
 	"strings"
 )
 
-// ValidationError represents a validation error
-type ValidationError struct {
+// Error represents a validation error
+type Error struct {
 	Field   string
 	Message string
 }
 
 // Error returns the error message
-func (e ValidationError) Error() string {
+func (e Error) Error() string {
 	return fmt.Sprintf("%s: %s", e.Field, e.Message)
 }
 
-// ValidationErrors represents a collection of validation errors
-type ValidationErrors []ValidationError
+// Errors represents a collection of validation errors
+type Errors []Error
 
 // Error returns all error messages joined with a semicolon
-func (e ValidationErrors) Error() string {
+func (e Errors) Error() string {
 	if len(e) == 0 {
 		return ""
 	}
@@ -34,38 +34,38 @@ func (e ValidationErrors) Error() string {
 }
 
 // Add adds a validation error to the collection
-func (e *ValidationErrors) Add(field, message string) {
-	*e = append(*e, ValidationError{Field: field, Message: message})
+func (e *Errors) Add(field, message string) {
+	*e = append(*e, Error{Field: field, Message: message})
 }
 
 // HasErrors returns true if there are any validation errors
-func (e ValidationErrors) HasErrors() bool {
+func (e Errors) HasErrors() bool {
 	return len(e) > 0
 }
 
 // ValidateRequired validates that a string field is not empty
-func ValidateRequired(field, value string, errors *ValidationErrors) {
+func ValidateRequired(field, value string, errors *Errors) {
 	if value == "" {
 		errors.Add(field, "is required")
 	}
 }
 
 // ValidateMinInt validates that an int field is at least min
-func ValidateMinInt(field string, value, min int32, errors *ValidationErrors) {
-	if value < min {
-		errors.Add(field, fmt.Sprintf("must be at least %d", min))
+func ValidateMinInt(field string, value, minV int32, errors *Errors) {
+	if value < minV {
+		errors.Add(field, fmt.Sprintf("must be at least %d", minV))
 	}
 }
 
 // ValidateMaxInt validates that an int field is at most max
-func ValidateMaxInt(field string, value, max int32, errors *ValidationErrors) {
-	if value > max {
-		errors.Add(field, fmt.Sprintf("must be at most %d", max))
+func ValidateMaxInt(field string, value, maxV int32, errors *Errors) {
+	if value > maxV {
+		errors.Add(field, fmt.Sprintf("must be at most %d", maxV))
 	}
 }
 
 // ValidateOneOf validates that a string field is one of the allowed values
-func ValidateOneOf(field, value string, allowedValues []string, errors *ValidationErrors) {
+func ValidateOneOf(field, value string, allowedValues []string, errors *Errors) {
 	for _, allowedValue := range allowedValues {
 		if value == allowedValue {
 			return

@@ -5,8 +5,8 @@ import (
 )
 
 // ValidateCreateTemplateRequest validates a CreateTemplateRequest
-func ValidateCreateTemplateRequest(req *v1.CreateTemplateRequest) ValidationErrors {
-	var errors ValidationErrors
+func ValidateCreateTemplateRequest(req *v1.CreateTemplateRequest) Errors {
+	var errors Errors
 
 	if req == nil || req.Template == nil {
 		errors.Add("request", "is required")
@@ -26,8 +26,8 @@ func ValidateCreateTemplateRequest(req *v1.CreateTemplateRequest) ValidationErro
 }
 
 // ValidateUpdateTemplateRequest validates an UpdateTemplateRequest
-func ValidateUpdateTemplateRequest(req *v1.UpdateTemplateRequest) ValidationErrors {
-	var errors ValidationErrors
+func ValidateUpdateTemplateRequest(req *v1.UpdateTemplateRequest) Errors {
+	var errors Errors
 
 	if req == nil || req.Template == nil {
 		errors.Add("request", "is required")
@@ -48,8 +48,8 @@ func ValidateUpdateTemplateRequest(req *v1.UpdateTemplateRequest) ValidationErro
 }
 
 // ValidateGetTemplateRequest validates a GetTemplateRequest
-func ValidateGetTemplateRequest(req *v1.GetTemplateRequest) ValidationErrors {
-	var errors ValidationErrors
+func ValidateGetTemplateRequest(req *v1.GetTemplateRequest) Errors {
+	var errors Errors
 
 	if req == nil {
 		errors.Add("request", "is required")
@@ -62,8 +62,8 @@ func ValidateGetTemplateRequest(req *v1.GetTemplateRequest) ValidationErrors {
 }
 
 // ValidateListTemplatesRequest validates a ListTemplatesRequest
-func ValidateListTemplatesRequest(req *v1.ListTemplatesRequest) ValidationErrors {
-	var errors ValidationErrors
+func ValidateListTemplatesRequest(req *v1.ListTemplatesRequest) Errors {
+	var errors Errors
 
 	if req == nil {
 		errors.Add("request", "is required")
@@ -76,8 +76,8 @@ func ValidateListTemplatesRequest(req *v1.ListTemplatesRequest) ValidationErrors
 }
 
 // ValidateDeleteTemplateRequest validates a DeleteTemplateRequest
-func ValidateDeleteTemplateRequest(req *v1.DeleteTemplateRequest) ValidationErrors {
-	var errors ValidationErrors
+func ValidateDeleteTemplateRequest(req *v1.DeleteTemplateRequest) Errors {
+	var errors Errors
 
 	if req == nil {
 		errors.Add("request", "is required")

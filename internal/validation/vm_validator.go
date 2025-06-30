@@ -5,8 +5,8 @@ import (
 )
 
 // ValidateCreateVirtualMachineRequest validates a CreateVirtualMachineRequest
-func ValidateCreateVirtualMachineRequest(req *v1.CreateVirtualMachineRequest) ValidationErrors {
-	var errors ValidationErrors
+func ValidateCreateVirtualMachineRequest(req *v1.CreateVirtualMachineRequest) Errors {
+	var errors Errors
 
 	if req == nil || req.VirtualMachine == nil {
 		errors.Add("request", "is required")
@@ -26,8 +26,8 @@ func ValidateCreateVirtualMachineRequest(req *v1.CreateVirtualMachineRequest) Va
 }
 
 // ValidateUpdateVirtualMachineRequest validates an UpdateVirtualMachineRequest
-func ValidateUpdateVirtualMachineRequest(req *v1.UpdateVirtualMachineRequest) ValidationErrors {
-	var errors ValidationErrors
+func ValidateUpdateVirtualMachineRequest(req *v1.UpdateVirtualMachineRequest) Errors {
+	var errors Errors
 
 	if req == nil || req.VirtualMachine == nil {
 		errors.Add("request", "is required")
@@ -48,8 +48,8 @@ func ValidateUpdateVirtualMachineRequest(req *v1.UpdateVirtualMachineRequest) Va
 }
 
 // ValidateGetVirtualMachineRequest validates a GetVirtualMachineRequest
-func ValidateGetVirtualMachineRequest(req *v1.GetVirtualMachineRequest) ValidationErrors {
-	var errors ValidationErrors
+func ValidateGetVirtualMachineRequest(req *v1.GetVirtualMachineRequest) Errors {
+	var errors Errors
 
 	if req == nil {
 		errors.Add("request", "is required")
@@ -62,8 +62,8 @@ func ValidateGetVirtualMachineRequest(req *v1.GetVirtualMachineRequest) Validati
 }
 
 // ValidateDeleteVirtualMachineRequest validates a DeleteVirtualMachineRequest
-func ValidateDeleteVirtualMachineRequest(req *v1.DeleteVirtualMachineRequest) ValidationErrors {
-	var errors ValidationErrors
+func ValidateDeleteVirtualMachineRequest(req *v1.DeleteVirtualMachineRequest) Errors {
+	var errors Errors
 
 	if req == nil {
 		errors.Add("request", "is required")

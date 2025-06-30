@@ -1,8 +1,10 @@
 package base
 
 import (
-	"connectrpc.com/connect"
 	"fmt"
+
+	"connectrpc.com/connect"
+
 	"github.com/aa1ex/paas-provider/internal/storage"
 	"github.com/aa1ex/paas-provider/internal/tmplproc"
 	"github.com/aa1ex/paas-provider/internal/validation"
@@ -23,7 +25,7 @@ func NewService(storage *storage.Storage, processor *tmplproc.TemplateProcessor)
 }
 
 // HandleValidationErrors converts validation errors to a connect error
-func (s *Service) HandleValidationErrors(errors validation.ValidationErrors) error {
+func (s *Service) HandleValidationErrors(errors validation.Errors) error {
 	if errors.HasErrors() {
 		return connect.NewError(connect.CodeInvalidArgument, fmt.Errorf("validation failed: %s", errors.Error()))
 	}

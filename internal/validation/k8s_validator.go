@@ -5,8 +5,8 @@ import (
 )
 
 // ValidateCreateKubernetesClusterRequest validates a CreateKubernetesClusterRequest
-func ValidateCreateKubernetesClusterRequest(req *v1.CreateKubernetesClusterRequest) ValidationErrors {
-	var errors ValidationErrors
+func ValidateCreateKubernetesClusterRequest(req *v1.CreateKubernetesClusterRequest) Errors {
+	var errors Errors
 
 	if req == nil || req.KubernetesCluster == nil {
 		errors.Add("request", "is required")
@@ -25,8 +25,8 @@ func ValidateCreateKubernetesClusterRequest(req *v1.CreateKubernetesClusterReque
 }
 
 // ValidateUpdateKubernetesClusterRequest validates an UpdateKubernetesClusterRequest
-func ValidateUpdateKubernetesClusterRequest(req *v1.UpdateKubernetesClusterRequest) ValidationErrors {
-	var errors ValidationErrors
+func ValidateUpdateKubernetesClusterRequest(req *v1.UpdateKubernetesClusterRequest) Errors {
+	var errors Errors
 
 	if req == nil || req.KubernetesCluster == nil {
 		errors.Add("request", "is required")
@@ -46,8 +46,8 @@ func ValidateUpdateKubernetesClusterRequest(req *v1.UpdateKubernetesClusterReque
 }
 
 // ValidateGetKubernetesClusterRequest validates a GetKubernetesClusterRequest
-func ValidateGetKubernetesClusterRequest(req *v1.GetKubernetesClusterRequest) ValidationErrors {
-	var errors ValidationErrors
+func ValidateGetKubernetesClusterRequest(req *v1.GetKubernetesClusterRequest) Errors {
+	var errors Errors
 
 	if req == nil {
 		errors.Add("request", "is required")
@@ -60,8 +60,8 @@ func ValidateGetKubernetesClusterRequest(req *v1.GetKubernetesClusterRequest) Va
 }
 
 // ValidateDeleteKubernetesClusterRequest validates a DeleteKubernetesClusterRequest
-func ValidateDeleteKubernetesClusterRequest(req *v1.DeleteKubernetesClusterRequest) ValidationErrors {
-	var errors ValidationErrors
+func ValidateDeleteKubernetesClusterRequest(req *v1.DeleteKubernetesClusterRequest) Errors {
+	var errors Errors
 
 	if req == nil {
 		errors.Add("request", "is required")
@@ -80,8 +80,8 @@ func ValidateDeleteKubernetesClusterRequest(req *v1.DeleteKubernetesClusterReque
 // Example implementation:
 /*
 // ValidateGetKubernetesClusterKubeconfigRequest validates a GetKubernetesClusterKubeconfigRequest
-func ValidateGetKubernetesClusterKubeconfigRequest(req *v1.GetKubernetesClusterKubeconfigRequest) ValidationErrors {
-	var errors ValidationErrors
+func ValidateGetKubernetesClusterKubeconfigRequest(req *v1.GetKubernetesClusterKubeconfigRequest) Errors {
+	var errors Errors
 
 	if req == nil {
 		errors.Add("request", "is required")

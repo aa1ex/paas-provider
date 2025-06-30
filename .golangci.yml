@@ -1,0 +1,92 @@
+# golangci-lint configuration
+# https://golangci-lint.run/usage/configuration/
+
+run:
+  # Timeout for running linters, e.g. 30s, 5m, default is 1m
+  timeout: 5m
+  # Include test files or not, default is true
+  tests: true
+  # Default concurrency is a available CPU number
+  concurrency: 4
+
+# Output configuration options
+output:
+  # Print lines of code with issue, default is true
+  print-issued-lines: true
+  # Print linter name in the end of issue text, default is true
+  print-linter-name: true
+
+# All available linters
+linters:
+  enable:
+    - errcheck      # Detect unchecked errors
+    - gosimple      # Simplify code
+    - govet         # Examine Go source code and reports suspicious constructs
+    - ineffassign   # Detect unused assignments
+    - staticcheck   # Go static analysis
+    - typecheck     # Like the front-end of a Go compiler
+    - unused        # Check for unused constants, variables, functions and types
+    - gofmt         # Check if code was gofmt-ed
+    - goimports     # Check imports formatting
+    - gosec         # Inspects source code for security problems
+    - misspell      # Find commonly misspelled English words in comments
+    - revive        # Fast, configurable, extensible, flexible, and beautiful linter for Go
+    - stylecheck    # Stylecheck is a replacement for golint
+    - unconvert     # Remove unnecessary type conversions
+    - unparam       # Find unused function parameters
+    - whitespace    # Tool for detection of leading and trailing whitespace
+
+# Linter settings
+linters-settings:
+  errcheck:
+    # Report about not checking of errors in type assertions: `a := b.(MyStruct)`.
+    check-type-assertions: true
+  govet:
+    # govet settings
+  revive:
+    # Minimum confidence for issues, default is 0.8
+    min-confidence: 0.8
+  gofmt:
+    # Simplify code: gofmt with `-s` option, true by default
+    simplify: true
+  goimports:
+    # Put imports beginning with prefix after 3rd-party packages
+    local-prefixes: github.com/aa1ex/paas-provider
+  gosec:
+    # To select a subset of rules to run
+    includes:
+      - G101 # Look for hard coded credentials
+      - G102 # Bind to all interfaces
+      - G103 # Audit the use of unsafe block
+  misspell:
+    # Correct spellings using locale preferences for US or UK.
+    locale: US
+
+# Issues configuration
+issues:
+  # Maximum count of issues with the same text
+  max-same-issues: 3
+  # Maximum issues count per one linter
+  max-issues-per-linter: 50
+  # Exclude directories from linting
+  exclude-dirs:
+    - frontend
+    - build
+    - bin
+  # Excluding configuration per-path, per-linter, per-text and per-source
+  exclude-rules:
+    # Exclude some linters from running on tests files.
+    - path: _test\.go
+      linters:
+        - gosec
+        - errcheck
+    # Exclude known linters from partially hard-vendored code,
+    # which is impossible to exclude via "nolint" comments.
+    - path: internal/hmac/
+      text: "weak cryptographic primitive"
+      linters:
+        - gosec
+    # Exclude some staticcheck messages
+    - linters:
+        - staticcheck
+      text: "SA1019:"  # Using a deprecated function, variable, constant or field
